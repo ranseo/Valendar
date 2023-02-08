@@ -23,7 +23,7 @@ object ApiServiceModule {
     fun provideRetrofit(moshi: Moshi) : Retrofit {
         return Retrofit.Builder()
             .baseUrl(provideBaseUrl())
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
             .build()
     }
 
