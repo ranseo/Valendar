@@ -1,22 +1,30 @@
 package com.ranseo.valendar.network
 
+import com.ranseo.valendar.data.model.business.LandFcst
 import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.Query
 
 object NetworkURL {
     const val WEATHER_FORECAST_BASE_URL = "http://apis.data.go.kr/1360000/VilageFcstMsgService/"
-    const val WEATHER_LANDFCST_BASE_URL = "http://apis.data.go.kr/1360000/VilageFcstMsgService/getLandFcst/"
 }
 interface WeatherApiService {
     @GET(WTHR_SITUATION)
-    suspend fun getWthrSituation() {
-
-    }
+    suspend fun getWthrSituation(
+        @Query("serviceKey") serviceKey: String,
+        @Query("numOfRows") numOfRows: Int,
+        @Query("pageNo")  pageNo: Int,
+        @Query("stnId") stnId: Int,
+        @Query("dataType") dataType:String ="JSON",
+    ) {}
 
     @GET(LAND_FCST)
-    suspend fun getLandFcst() {
-
-    }
+    suspend fun getLandFcst(
+        @Query("serviceKey") serviceKey: String,
+        @Query("numOfRows") numOfRows: Int,
+        @Query("pageNo")  pageNo: Int,
+        @Query("regId") regId:String,
+        @Query("dataType") dataType:String ="JSON"
+    ) : LandFcst
 
     companion object {
         const val WTHR_SITUATION = "getWthrSituation"

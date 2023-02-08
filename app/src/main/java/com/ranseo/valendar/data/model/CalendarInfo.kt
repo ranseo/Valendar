@@ -1,4 +1,4 @@
-package com.ranseo.valendar.model
+package com.ranseo.valendar.data.model
 
 data class CalendarInfo(
     val calendarId:Long,
