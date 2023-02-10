@@ -12,8 +12,8 @@ class LandFcstRepository @Inject constructor(private val weatherApiService: Weat
     suspend fun getLandFcst() {
         withContext(Dispatchers.IO) {
             try {
-                val landFcst = weatherApiService.getLandFcst(WeatherApiService.LAND_FCST,BuildConfig.WEATHER_FCST_KEY, "1", "1", "11B20201")
-                Log.log(TAG, "getLandFcst() success :${landFcst.toString()}", LogTag.I)
+                val landFcst = weatherApiService.getWeather("JSON", 14, 1, 20230210,1100 , "55","123")
+                Log.log(TAG, "getLandFcst() success :${landFcst.body()?.response?.body?.items?.item}", LogTag.I)
             } catch (error: Exception) {
                 Log.log(TAG, "getLandFcst() error : ${error.message}", LogTag.I)
             }
