@@ -12,13 +12,13 @@ object NetworkURL {
 interface WeatherApiService {
     @GET("getVilageFcst?serviceKey=${BuildConfig.WEATHER_FCST_KEY}")
     suspend fun getWeather(
-        @Query("dataType") dataType : String,
         @Query("numOfRows") numOfRows : Int,
         @Query("pageNo") pageNo : Int,
         @Query("base_date") baseDate : Int,
         @Query("base_time") baseTime : Int,
         @Query("nx") nx : String,
-        @Query("ny") ny : String
+        @Query("ny") ny : String,
+        @Query("dataType") dataType : String ="JSON"
     ) : Response<Weather>
     companion object {
         const val LAND_FCST = "getVilageFcst"

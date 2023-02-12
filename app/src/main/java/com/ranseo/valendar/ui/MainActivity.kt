@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.content.getSystemService
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
 import com.ranseo.valendar.databinding.ActivityMainBinding
 import com.ranseo.valendar.util.Log
@@ -30,7 +31,10 @@ class MainActivity : AppCompatActivity() {
                 val month = date.month
                 val year = date.year
 
+                val baseDate = "${year}${month}${day}"
+                val baseTime = System.currentTimeMillis()
                 Log.log(TAG, "selected : ${selected}, ${LocalDate.of(year, month, day)}", LogTag.I)
+
             })
         }
 

@@ -9,10 +9,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LandFcstRepository @Inject constructor(private val weatherApiService: WeatherApiService) {
-    suspend fun getLandFcst() {
+    suspend fun getLandFcst(numOfRows:Int, pageNo:Int, baseDate:Int, baseTime:Int, nx:String, ny:String) {
         withContext(Dispatchers.IO) {
             try {
-                val landFcst = weatherApiService.getWeather("JSON", 14, 1, 20230210,1100 , "55","123")
+                val landFcst = weatherApiService.getWeather( numOfRows, pageNo, baseDate,baseTime , nx,ny)
                 Log.log(TAG, "getLandFcst() success :${landFcst.body()?.response?.body?.items?.item}", LogTag.I)
             } catch (error: Exception) {
                 Log.log(TAG, "getLandFcst() error : ${error.message}", LogTag.I)
