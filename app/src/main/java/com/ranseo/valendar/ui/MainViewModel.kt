@@ -16,7 +16,7 @@ class MainViewModel @Inject constructor(
     val getLandFcstUseCase:GetLandFcstUseCase
 ) : AndroidViewModel(application){
 
-    fun getLandFcst(numOfRows: Int, pageNo: Int, baseDate: Int, baseTime: Int, nx: String, ny: String) {
+    fun getLandFcst(numOfRows: Int=14, pageNo: Int=1, baseDate: Int, baseTime: Int, nx: String, ny: String) {
         viewModelScope.launch(Dispatchers.IO) {
             getLandFcstUseCase(numOfRows, pageNo, baseDate, baseTime, nx, ny)
         }

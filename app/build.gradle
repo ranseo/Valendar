@@ -78,9 +78,6 @@ dependencies {
     //layout
     implementation "androidx.cardview:cardview:1.0.0"
 
-    //Calendar-material-calendarView
-    implementation "com.github.prolificinteractive:material-calendarview:$prolific_interactive_version"
-
     //Jetpack
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")

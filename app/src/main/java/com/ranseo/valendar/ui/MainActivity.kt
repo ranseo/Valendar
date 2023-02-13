@@ -1,17 +1,19 @@
 package com.ranseo.valendar.ui
 
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
+import android.widget.Spinner
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.core.content.getSystemService
-import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
+import androidx.appcompat.app.AppCompatActivity
+import com.ranseo.valendar.R
 import com.ranseo.valendar.databinding.ActivityMainBinding
 import com.ranseo.valendar.util.Log
 import com.ranseo.valendar.util.LogTag
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDate
+import java.text.SimpleDateFormat
+import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -24,27 +26,41 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
 
         val calendar = binding.layoutCalendar.apply {
-            setOnDateChangedListener(OnDateSelectedListener{ widget, date, selected ->
-                val day = date.day
-                val month = date.month
-                val year = date.year
-
+            setOnDateChangeListener { p0, year, month, day ->
                 val baseDate = "${year}${month}${day}"
-                val baseTime = System.currentTimeMillis()
-                Log.log(TAG, "selected : ${selected}, ${LocalDate.of(year, month, day)}", LogTag.I)
-
-            })
+                val date = Date(System.currentTimeMillis())
+                val baseTime = SimpleDateFormat("kkmm").format(date)
+                Log.log(TAG, "${baseDate}, baseTime : ${baseTime}", LogTag.I)
+            }
         }
+
+
+
+
+
 
         val btn = binding.btnTmp.apply {
             setOnClickListener {
-                mainViewModel.getLandFcst()
+
             }
         }
 
     }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId) {
+        R.id.location_spinner -> {
+            true
+        }
+        R.id.location_name -> {
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
+
+
 
     companion object {
         private const val TAG = "MainActivity"

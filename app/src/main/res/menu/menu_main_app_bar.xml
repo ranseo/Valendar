@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/location_name"
+        android:title="인천"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/location_spinner"
+        android:icon="@drawable/baseline_arrow_drop_down_24"
+        app:showAsAction="always"
+        android:title="spinner"
+        />
+
+
+</menu>
