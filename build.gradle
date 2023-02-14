@@ -11,7 +11,7 @@ buildscript {
     ext.prolific_interactive_version = "2.0.1"
 
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10"
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20-Beta'
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
     }
