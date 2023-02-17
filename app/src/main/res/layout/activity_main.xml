@@ -21,6 +21,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|center" />
 
+        <Button
+            android:id="@+id/btn_loc"
+            android:text="마지막 위치"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="120dp"/>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_bottom_sheet"
             android:layout_width="match_parent"
