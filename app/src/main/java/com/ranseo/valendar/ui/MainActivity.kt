@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.ranseo.valendar.databinding.ActivityMainBinding
 import com.ranseo.valendar.util.FcstBaseTime
+import com.ranseo.valendar.util.LocationConverter
 import com.ranseo.valendar.util.Log
 import com.ranseo.valendar.util.LogTag
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,9 +38,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
 
+    private var requestingLocationUpdates : Boolean = false
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest : LocationRequest
     private lateinit var locationCallback : LocationCallback
+
+    private lateinit var  locationConverter: LocationConverter
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,6 +85,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        updateValuesFromBundle(savedInstanceState)
+
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
                 when {
@@ -96,21 +102,36 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+        requestPermission()
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationClient.lastLocation.addOnSuccessListener { loc ->
+            Log.log(TAG, "btnLoc getLocation() : ${loc.toString()}", LogTag.I)
+        }
+
+        locationConverter = LocationConverter()
+
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun requestPermission() {
         when {
             ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            )== PackageManager.PERMISSION_GRANTED
-             &&
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )== PackageManager.PERMISSION_GRANTED -> {
+            ) == PackageManager.PERMISSION_GRANTED
+                    &&
+                    ContextCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED -> {
             }
 
             shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) ||
-            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION
-            ) -> {
+                    shouldShowRequestPermissionRationale(
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) -> {
 
             }
 
@@ -121,37 +142,42 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
+    }
 
+    private fun startLocationUpdate() {
+        createLocationRequest()
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult) {
                 p0 ?: return
                 for(location in p0.locations) {
-                    Log.log(TAG, "LocationCallback() : ${location.toString()}, 위도 : ${location.latitude}, 경도 : ${location.longitude}", LogTag.I)
+                    val lon = location.longitude //경도
+                    val lat = location.latitude //위도
+                    Log.log(TAG, "LocationCallback() : ${location.toString()}, 위도 : ${lat}, 경도 : ${lon}", LogTag.I)
+                    locationConverter.convertLLToXY(lon.toFloat(), lat.toFloat())
                 }
             }
         }
-        fusedLocationClient.lastLocation.addOnSuccessListener { loc ->
-            Log.log(TAG, "btnLoc getLocation() : ${loc.toString()}", LogTag.I)
-        }
-        createLocationRequest()
-    }
 
-    private fun startLocationUpdate() {
         fusedLocationClient.requestLocationUpdates(locationRequest,
             locationCallback,
-            Looper.getMainLooper())
+            Looper.getMainLooper()).addOnSuccessListener {
+                requestingLocationUpdates = true
+        } .addOnFailureListener {
+            requestingLocationUpdates = false
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        startLocationUpdate()
+        if(!requestingLocationUpdates)startLocationUpdate()
+
+        locationConverter.convertLLToXY(126.7077f, 37.4073f)
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
     fun createLocationRequest() {
-        locationRequest = LocationRequest.Builder(10000)
+        locationRequest = LocationRequest.Builder(50000)
             .setPriority(android.location.LocationRequest.QUALITY_LOW_POWER)
             .build()
 
@@ -189,7 +215,31 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.getWeather(baseDate, baseTime, nx, ny)
     }
 
+    override fun onPause() {
+        super.onPause()
+        stopLocationUpdates()
+    }
+
+    private fun stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+        requestingLocationUpdates = false
+    }
+
+    private fun updateValuesFromBundle(savedInstanceState: Bundle?) {
+        savedInstanceState ?: return
+
+        if(savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
+            requestingLocationUpdates = savedInstanceState.getBoolean(
+                REQUESTING_LOCATION_UPDATES_KEY
+            )
+        }
+    }
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, requestingLocationUpdates)
+        super.onSaveInstanceState(outState)
+    }
     companion object {
         private const val TAG = "MainActivity"
+        private const val REQUESTING_LOCATION_UPDATES_KEY = "LOCATION_KEY"
     }
 }
