@@ -1,4 +1,4 @@
-data class Weather(
+data class WeatherRemoteModel(
     val response: Response
 ) {
 

@@ -1,8 +1,12 @@
 package com.ranseo.valendar.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.location.Geocoder.GeocodeListener
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
@@ -38,13 +42,15 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
 
-    private var requestingLocationUpdates : Boolean = false
+    private var requestingLocationUpdates: Boolean = false
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationRequest : LocationRequest
-    private lateinit var locationCallback : LocationCallback
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
 
-    private lateinit var  locationConverter: LocationConverter
+    private lateinit var locationConverter: LocationConverter
+    private lateinit var geoCoder: Geocoder
 
+    @SuppressLint("MissingPermission", "NewApi")
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                     "${baseDate}, currTime : ${currTime} ,baseTime : ${baseTime}",
                     LogTag.I
                 )
-                getWeatherInfo(baseDate, baseTime, "55", "123")
+                getWeatherInfo(baseDate, baseTime)
                 showWeatherSheet()
             }
         }
@@ -105,13 +111,38 @@ class MainActivity : AppCompatActivity() {
         requestPermission()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        fusedLocationClient.lastLocation.addOnSuccessListener { loc ->
-            Log.log(TAG, "btnLoc getLocation() : ${loc.toString()}", LogTag.I)
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            val lon = location.longitude //경도
+            val lat = location.latitude //위도
+            getAddress(lat, lon)
+            Log.log(
+                TAG,
+                "lastLocation() : ${location.toString()}, 위도 : ${lat}, 경도 : ${lon}",
+                LogTag.I
+            )
+            val p: Pair<Int, Int> = locationConverter.convertLLToXY(lon.toFloat(), lat.toFloat())
+            mainViewModel.setGridLocation(p)
         }
 
         locationConverter = LocationConverter()
+        geoCoder = Geocoder(this, Locale.KOREA)
+    }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun getAddress(lat: Double, lon: Double) {
+        try {
+            geoCoder.getFromLocation(lat, lon, 1, (GeocodeListener {
 
+                if(it.isNotEmpty()) {
+                    val addr = it.get(0).getAddressLine(0).toString()
+                    Log.log(TAG, "getAddress() : ${addr}", LogTag.I)
+                    mainViewModel.setAddress(addr)
+                }
+            }))
+
+        } catch (error: java.lang.Exception) {
+            Log.log(TAG, "getAddress() Failure ${error.message}}", LogTag.I)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -144,75 +175,90 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
+    @SuppressLint("MissingPermission")
     private fun startLocationUpdate() {
         createLocationRequest()
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult) {
                 p0 ?: return
-                for(location in p0.locations) {
+                for (location in p0.locations) {
                     val lon = location.longitude //경도
                     val lat = location.latitude //위도
-                    Log.log(TAG, "LocationCallback() : ${location.toString()}, 위도 : ${lat}, 경도 : ${lon}", LogTag.I)
-                    locationConverter.convertLLToXY(lon.toFloat(), lat.toFloat())
+                    getAddress(lat, lon)
+                    Log.log(
+                        TAG,
+                        "LocationCallback() : ${location.toString()}, 위도 : ${lat}, 경도 : ${lon}",
+                        LogTag.I
+                    )
+                    val p: Pair<Int, Int> =
+                        locationConverter.convertLLToXY(lon.toFloat(), lat.toFloat())
+                    mainViewModel.setGridLocation(p)
                 }
             }
         }
 
-        fusedLocationClient.requestLocationUpdates(locationRequest,
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
             locationCallback,
-            Looper.getMainLooper()).addOnSuccessListener {
-                requestingLocationUpdates = true
-        } .addOnFailureListener {
+            Looper.getMainLooper()
+        ).addOnSuccessListener {
+            requestingLocationUpdates = true
+        }.addOnFailureListener {
             requestingLocationUpdates = false
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onResume() {
         super.onResume()
-        if(!requestingLocationUpdates)startLocationUpdate()
+        if (!requestingLocationUpdates) startLocationUpdate()
 
-        locationConverter.convertLLToXY(126.7077f, 37.4073f)
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
     fun createLocationRequest() {
-        locationRequest = LocationRequest.Builder(50000)
-            .setPriority(android.location.LocationRequest.QUALITY_LOW_POWER)
+        locationRequest = LocationRequest.Builder(10 * 60 * 1000)
+            .setMaxUpdateDelayMillis(60 * 60 * 1000)
+            .setPriority(android.location.LocationRequest.QUALITY_HIGH_ACCURACY)
             .build()
 
         val builder = LocationSettingsRequest.Builder()
             .addLocationRequest(locationRequest)
 
-        val client : SettingsClient = LocationServices.getSettingsClient(this)
-        val task : Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
+        val client: SettingsClient = LocationServices.getSettingsClient(this)
+        val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
 
         task.addOnSuccessListener { locationSettingResponse ->
-            Log.log(TAG, "task.addOnSuccessListener : ${locationSettingResponse.locationSettingsStates}", LogTag.I)
+            Log.log(
+                TAG,
+                "task.addOnSuccessListener : ${locationSettingResponse.locationSettingsStates}",
+                LogTag.I
+            )
 
         }
 
-        task.addOnFailureListener{ exception ->
-            if(exception is ResolvableApiException) {
-                try{
-                    Log.log(TAG,"task failure : ${exception.message}", LogTag.I)
+        task.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                try {
+                    Log.log(TAG, "task failure : ${exception.message}", LogTag.I)
 //                    exception.startResolutionForResult(this@MainActivity,
 //                    REQUEST_CHECK_SETTINGS)
-                }catch (sendEx: IntentSender.SendIntentException) {
+                } catch (sendEx: IntentSender.SendIntentException) {
 
                 }
             }
         }
     }
-
 
 
     fun showWeatherSheet() {
         sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    fun getWeatherInfo(baseDate: String, baseTime: String, nx: String, ny: String) {
-        mainViewModel.getWeather(baseDate, baseTime, nx, ny)
+    fun getWeatherInfo(baseDate: String, baseTime: String) {
+        mainViewModel.getWeather(baseDate, baseTime)
     }
 
     override fun onPause() {
@@ -228,16 +274,18 @@ class MainActivity : AppCompatActivity() {
     private fun updateValuesFromBundle(savedInstanceState: Bundle?) {
         savedInstanceState ?: return
 
-        if(savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
+        if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
             requestingLocationUpdates = savedInstanceState.getBoolean(
                 REQUESTING_LOCATION_UPDATES_KEY
             )
         }
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, requestingLocationUpdates)
         super.onSaveInstanceState(outState)
     }
+
     companion object {
         private const val TAG = "MainActivity"
         private const val REQUESTING_LOCATION_UPDATES_KEY = "LOCATION_KEY"

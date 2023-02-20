@@ -22,14 +22,22 @@ class MainViewModel @Inject constructor(
     val getWeatherUseCase: GetWeatherUseCase
 ) : AndroidViewModel(application) {
 
-    private val _weatherUIState = MutableLiveData<WeatherUIState>()
-    val weatherUIState : LiveData<WeatherUIState>
-        get() = _weatherUIState
+    private val _address = MutableLiveData<String>()
+    val address : LiveData<String>
+        get() = _address
 
-    val pop = Transformations.map(weatherUIState) {
+    private val _gridLocation = MutableLiveData<Pair<Int,Int>>((0 to 0))
+    val gridLocation : LiveData<Pair<Int,Int>>
+        get() = _gridLocation
+
+    private val _weather = MutableLiveData<WeatherUIState>()
+    val weather : LiveData<WeatherUIState>
+        get() = _weather
+
+    val pop = Transformations.map(weather) {
         "강수확률 : ${it.pop}%"
     }
-    val pty = Transformations.map(weatherUIState) {
+    val pty = Transformations.map(weather) {
         "강수형태 : ${when(it.pty) {
             1 -> "비"
             2 -> "비/눈"
@@ -39,11 +47,11 @@ class MainViewModel @Inject constructor(
         }}"
     }
 
-    val tmp = Transformations.map(weatherUIState) {
+    val tmp = Transformations.map(weather) {
         "현재기온 : ${it.tmp}ºC"
     }
 
-    val sky = Transformations.map(weatherUIState) {
+    val sky = Transformations.map(weather) {
         "오늘날씨 : ${when(it.sky) {
             1 -> "맑음"
             3 -> "구름많음"
@@ -53,28 +61,21 @@ class MainViewModel @Inject constructor(
     }
 
     fun getWeather(
-        baseDate: String,
-        baseTime: String,
-        nx: String,
-        ny: String,
-        numOfRows: Int = 14,
-        pageNo: Int = 1,
+        baseDate: Int,
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            getWeatherUseCase(numOfRows, pageNo, baseDate, baseTime, nx, ny).collect { result ->
-                when (result) {
-                    is Result.Success<Weather.Items> -> {
-                        Log.log(TAG, "getWeatherUseCase success :${result.data}", LogTag.I)
-                        _weatherUIState.postValue(WeatherUIState.getWeatherUIStateFromItem(result.data.item))
-                    }
-                    is Result.Error -> {
-                        Log.log(TAG, "getWeatherUseCase success :${result.exception}", LogTag.I)
-                        _weatherUIState.postValue(WeatherUIState.getWeatherUIStateFromItem(listOf()))
-                    }
-                }
-            }
+             _weather.postValue(getWeatherUseCase(baseDate))
         }
     }
+
+    fun setGridLocation(p:Pair<Int,Int>) {
+        _gridLocation.value = p
+    }
+
+    fun setAddress(addr:String) {
+        _address.postValue("위치 : ${addr}")
+    }
+
     companion object {
         private const val TAG = "MainViewModel"
     }

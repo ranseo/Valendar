@@ -14,11 +14,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/tv_address"
+            android:textSize="24sp"
+            android:textColor="@color/black"
+            android:text="@{viewModel.address}"
+            tools:text="주소 : 대한민국 인천광역시 중구 공항로 272 인천국제공항 (ICN) 2터미널"
+            android:layout_width="match_parent"
+            android:layout_height="90dp" />
+
 
         <CalendarView
             android:id="@+id/layout_calendar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="90dp"
             android:layout_gravity="top|center" />
 
         <Button

@@ -1,6 +1,7 @@
 package com.ranseo.valendar.data.model.ui
 
-import Weather
+import WeatherRemoteModel
+import com.ranseo.valendar.data.model.business.WeatherLocalModel
 
 data class WeatherUIState(
     val tmp : Float,
@@ -9,7 +10,7 @@ data class WeatherUIState(
     val sky : Int
 ) {
     companion object {
-        fun getWeatherUIStateFromItem(items:List<Weather.Item>) : WeatherUIState {
+        fun getWeatherUIStateFromItem(items:List<WeatherLocalModel>) : WeatherUIState {
             var tmp : Float = -1f
             var pop : Float = -1f
             var pty : Int = -1

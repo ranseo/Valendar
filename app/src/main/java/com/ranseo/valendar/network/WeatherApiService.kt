@@ -1,6 +1,6 @@
 package com.ranseo.valendar.network
 
-import Weather
+import WeatherRemoteModel
 import com.ranseo.valendar.BuildConfig
 import retrofit2.Response
 import retrofit2.http.GET
@@ -19,7 +19,7 @@ interface WeatherApiService {
         @Query("nx") nx : String,
         @Query("ny") ny : String,
         @Query("dataType") dataType : String ="JSON"
-    ) : Response<Weather>
+    ) : Response<WeatherRemoteModel>
     companion object {
         const val LAND_FCST = "getVilageFcst"
     }

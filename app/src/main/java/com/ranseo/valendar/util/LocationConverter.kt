@@ -13,7 +13,7 @@ class LocationConverter {
 
         getMapConv(floats1,0,map)
 
-        Log.log(TAG, "convertLLToXY : lon = ${floats1[0]}, lat = ${floats1[1]} ==>> x = ${floats1[2]}, y = ${floats1[3]}", LogTag.I)
+        Log.log(TAG, "convertLLToXY : lon = ${floats1[0]}, lat = ${floats1[1]} ==>> x = ${floats1[2].toInt()}, y = ${floats1[3].toInt()}", LogTag.I)
 
         return (floats1[2].toInt() to floats1[3].toInt())
     }
