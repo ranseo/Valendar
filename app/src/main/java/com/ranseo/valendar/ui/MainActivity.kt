@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.IntentSender
 import android.content.pm.PackageManager
-import android.location.Address
 import android.location.Geocoder
 import android.location.Geocoder.GeocodeListener
 import android.os.Build
@@ -17,7 +16,6 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -50,7 +48,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var locationConverter: LocationConverter
     private lateinit var geoCoder: Geocoder
 
-    @SuppressLint("MissingPermission", "NewApi")
+    @SuppressLint("MissingPermission", "NewApi", "SimpleDateFormat")
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,8 +72,8 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        val calendar = binding.layoutCalendar.apply {
-            setOnDateChangeListener { p0, year, month, day ->
+        binding.layoutCalendar.apply {
+            setOnDateChangeListener { _, year, month, day ->
                 val baseDate = "%d%02d%02d".format(year, month + 1, day)
                 val date = Date(System.currentTimeMillis())
                 val currTime = SimpleDateFormat("kkmm").format(date)
@@ -86,7 +84,7 @@ class MainActivity : AppCompatActivity() {
                     "${baseDate}, currTime : ${currTime} ,baseTime : ${baseTime}",
                     LogTag.I
                 )
-                getWeatherInfo(baseDate, baseTime)
+                getWeatherInfo(baseDate.toInt())
                 showWeatherSheet()
             }
         }
@@ -120,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                 "lastLocation() : ${location.toString()}, 위도 : ${lat}, 경도 : ${lon}",
                 LogTag.I
             )
-            val p: Pair<Int, Int> = locationConverter.convertLLToXY(lon.toFloat(), lat.toFloat())
+            val p: Pair<String, String> = locationConverter.convertLLToXY(lon.toFloat(), lat.toFloat())
             mainViewModel.setGridLocation(p)
         }
 
@@ -181,8 +179,8 @@ class MainActivity : AppCompatActivity() {
         createLocationRequest()
 
         locationCallback = object : LocationCallback() {
+            @SuppressLint("NewApi")
             override fun onLocationResult(p0: LocationResult) {
-                p0 ?: return
                 for (location in p0.locations) {
                     val lon = location.longitude //경도
                     val lat = location.latitude //위도
@@ -192,7 +190,7 @@ class MainActivity : AppCompatActivity() {
                         "LocationCallback() : ${location.toString()}, 위도 : ${lat}, 경도 : ${lon}",
                         LogTag.I
                     )
-                    val p: Pair<Int, Int> =
+                    val p: Pair<String, String> =
                         locationConverter.convertLLToXY(lon.toFloat(), lat.toFloat())
                     mainViewModel.setGridLocation(p)
                 }
@@ -246,7 +244,7 @@ class MainActivity : AppCompatActivity() {
 //                    exception.startResolutionForResult(this@MainActivity,
 //                    REQUEST_CHECK_SETTINGS)
                 } catch (sendEx: IntentSender.SendIntentException) {
-
+                    Log.log(TAG, "task failure : ${exception.message}", LogTag.I)
                 }
             }
         }
@@ -257,8 +255,8 @@ class MainActivity : AppCompatActivity() {
         sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    fun getWeatherInfo(baseDate: String, baseTime: String) {
-        mainViewModel.getWeather(baseDate, baseTime)
+    fun getWeatherInfo(baseDate: Int) {
+        mainViewModel.getWeather(baseDate)
     }
 
     override fun onPause() {

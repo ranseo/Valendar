@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.ranseo.valendar.data.model.business.WeatherLocalModel
 
 
-@Database(entities = [WeatherLocalModel::class], version = 0, exportSchema = false)
+@Database(entities = [WeatherLocalModel::class], version = 1, exportSchema = true)
 abstract class ValendarDatabase : RoomDatabase() {
     abstract fun getValendarDao() : ValendarDao
 }

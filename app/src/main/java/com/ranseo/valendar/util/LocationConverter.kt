@@ -4,7 +4,7 @@ import java.lang.Math.pow
 import kotlin.math.*
 
 class LocationConverter {
-    fun convertLLToXY(lon: Float, lat: Float): Pair<Int, Int> {
+    fun convertLLToXY(lon: Float, lat: Float): Pair<String, String> {
         val map: LamcParameter = LamcParameter()
         val floats1: Array<Float> = Array(4) { 0f }  //1.lon 2.lat 3.x 4.y
 
@@ -15,7 +15,7 @@ class LocationConverter {
 
         Log.log(TAG, "convertLLToXY : lon = ${floats1[0]}, lat = ${floats1[1]} ==>> x = ${floats1[2].toInt()}, y = ${floats1[3].toInt()}", LogTag.I)
 
-        return (floats1[2].toInt() to floats1[3].toInt())
+        return (floats1[2].toInt().toString() to floats1[3].toInt().toString())
     }
 
     data class LamcParameter(

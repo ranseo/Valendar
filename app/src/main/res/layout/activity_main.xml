@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="강수확률 : 12%"
-                android:text="@{viewModel.pop}"
+                android:text="@{viewModel.weather.pop}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="강수형태 : 비"
-                android:text="@{viewModel.pty}"
+                android:text="@{viewModel.weather.pty}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_pop" />
 
@@ -72,7 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="하늘상태 : 맑음"
-                android:text="@{viewModel.sky}"
+                android:text="@{viewModel.weather.sky}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_pty" />
 
@@ -81,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="현재 기온 : 10도"
-                android:text="@{viewModel.tmp}"
+                android:text="@{viewModel.weather.tmp}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_sky" />
         </androidx.constraintlayout.widget.ConstraintLayout>

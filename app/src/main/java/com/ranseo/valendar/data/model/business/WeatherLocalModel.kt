@@ -10,13 +10,20 @@ data class WeatherLocalModel(
     @PrimaryKey
     @ColumnInfo(name = "base_date")
     val baseDate: Int,
+    @ColumnInfo(name = "base_time")
     val baseTime: Int,
     @PrimaryKey
+    @ColumnInfo(name = "category")
     val category: String,
+    @ColumnInfo(name = "fcst_date")
     val fcstDate : Int,
+    @ColumnInfo(name = "fcst_time")
     val fcstTime : Int,
+    @ColumnInfo(name = "fcst_value")
     val fcstValue : String,
+    @ColumnInfo(name = "nx")
     val nx : Int,
+    @ColumnInfo(name = "ny")
     val ny : Int
 ) {
     constructor(weather: WeatherRemoteModel.Item) : this(
