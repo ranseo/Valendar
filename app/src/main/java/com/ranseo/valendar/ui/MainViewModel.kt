@@ -6,10 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
-import androidx.work.BackoffPolicy
-import androidx.work.PeriodicWorkRequest
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.workDataOf
+import androidx.work.*
+import com.ranseo.valendar.WEATHER_WORK_UNIQUE_ID
 import com.ranseo.valendar.WORKER_KEY_GRID
 import com.ranseo.valendar.data.model.Result
 import com.ranseo.valendar.data.model.ui.WeatherUIState
@@ -46,10 +44,14 @@ class MainViewModel @Inject constructor(
         val workWeather = PeriodicWorkRequestBuilder<WeatherWorker>(3,
             TimeUnit.HOURS, 50, TimeUnit.MINUTES)
             .setInputData(workDataOf(WORKER_KEY_GRID to grid))
-            .setBackoffCriteria(BackoffPolicy.LINEAR, PeriodicWorkRequest.MIN_BACKOFF_MILLIS,TimeUnit.MILLISECONDS)
+            .setBackoffCriteria(BackoffPolicy.LINEAR, WorkRequest.MIN_BACKOFF_MILLIS,TimeUnit.MILLISECONDS)
             .build()
 
-
+        WorkManager.getInstance(getApplication()).enqueueUniquePeriodicWork(
+            WEATHER_WORK_UNIQUE_ID, // 고유 작업 아이디
+            ExistingPeriodicWorkPolicy.KEEP, //해당 작업이 있을 때 아무것도 하지않기.
+            workWeather
+        )
     }
 
     fun getWeather(

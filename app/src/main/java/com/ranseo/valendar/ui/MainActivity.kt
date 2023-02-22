@@ -17,6 +17,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
@@ -89,6 +90,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+        mainViewModel.gridLocation.observe(this, gridLocationObserver())
+
         updateValuesFromBundle(savedInstanceState)
 
         requestPermissionLauncher =
@@ -125,6 +129,11 @@ class MainActivity : AppCompatActivity() {
         locationConverter = LocationConverter()
         geoCoder = Geocoder(this, Locale.KOREA)
     }
+
+    private fun gridLocationObserver() =
+        Observer<Pair<String,String>>{
+            mainViewModel.requestWeatherInfo(it)
+        }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun getAddress(lat: Double, lon: Double) {
