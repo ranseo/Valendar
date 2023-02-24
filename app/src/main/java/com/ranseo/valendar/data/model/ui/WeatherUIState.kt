@@ -21,9 +21,9 @@ data class WeatherUIState(
             val fcstTime: String = if (items.isNotEmpty()) {
                 run {
                     val time = ("%04d".format(items[0].fcstTime))
-                    val hour = time.substring(0, 2)
-                    val min = time.substring(2, 4)
-                    "기상 예보 시각 : %02s시 %02s분".format(hour, min)
+                    val hour = time.substring(0, 2).toInt()
+                    val min = time.substring(2, 4).toInt()
+                    "기상 예보 시각 : %02d시 %02d분".format(hour, min)
                 }
             } else ""
 
