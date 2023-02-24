@@ -5,14 +5,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "weather_table")
+@Entity(tableName = "weather_table", primaryKeys = ["base_date", "category"])
 data class WeatherLocalModel(
-    @PrimaryKey
     @ColumnInfo(name = "base_date")
     val baseDate: Int,
     @ColumnInfo(name = "base_time")
     val baseTime: Int,
-    @PrimaryKey
     @ColumnInfo(name = "category")
     val category: String,
     @ColumnInfo(name = "fcst_date")
@@ -26,16 +24,16 @@ data class WeatherLocalModel(
     @ColumnInfo(name = "ny")
     val ny : Int
 ) {
-    constructor(weather: WeatherRemoteModel.Item) : this(
-        baseDate = weather.baseDate,
-        baseTime = weather.baseTime,
-        category = weather.category,
-        fcstDate = weather.fcstDate,
-        fcstTime = weather.fcstTime,
-        fcstValue = weather.fcstValue,
-        nx = weather.nx,
-        ny = weather.ny
-    )
+//    constructor(_baseDate: Int,  _baseTime: Int, _category: String, _fcstDate: Int, _fcstTime: Int, _fcstValue: String, _nx: Int , _ny: Int) : this(
+//        baseDate = _baseDate,
+//        baseTime = _baseTime,
+//        category = _category,
+//        fcstDate = _fcstDate,
+//        fcstTime = _fcstTime,
+//        fcstValue = _fcstValue,
+//        nx = _nx,
+//        ny = _ny
+//    )
 }
 
 data class WeatherLocalModelContainer(
@@ -43,7 +41,7 @@ data class WeatherLocalModelContainer(
 ) {
     companion object {
         fun getWeathers(weathers: List<WeatherRemoteModel.Item>) : WeatherLocalModelContainer{
-            return WeatherLocalModelContainer(weathers.map{WeatherLocalModel(it)})
+            return WeatherLocalModelContainer(weathers.map{WeatherLocalModel(it.baseDate, it.baseTime, it.category, it.fcstTime, it.fcstTime, it.fcstValue, it.nx, it.ny)})
         }
     }
 }

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    >
 
     <data>
         <variable
@@ -39,52 +41,11 @@
             android:layout_gravity="bottom|center"
             android:layout_marginBottom="120dp"/>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <include
             android:id="@+id/layout_bottom_sheet"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:background="@drawable/boarder_line_black_top_highlight"
-            app:behavior_peekHeight="0dp"
-            android:padding="20dp"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-
-
-            <TextView
-                android:id="@+id/tv_pop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="강수확률 : 12%"
-                android:text="@{viewModel.weather.pop}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_pty"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="강수형태 : 비"
-                android:text="@{viewModel.weather.pty}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_pop" />
-
-            <TextView
-                android:id="@+id/tv_sky"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="하늘상태 : 맑음"
-                android:text="@{viewModel.weather.sky}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_pty" />
-
-            <TextView
-                android:id="@+id/tv_tmp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="현재 기온 : 10도"
-                android:text="@{viewModel.weather.tmp}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_sky" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            layout="@layout/layout_main_bottom_sheet"
+            bind:viewModel="@{viewModel}"
+            />
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.ranseo.valendar.ui.MainViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@drawable/boarder_line_black_top_highlight"
+        app:behavior_peekHeight="0dp"
+        android:padding="20dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+
+        <TextView
+            android:id="@+id/tv_fcstTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="기상 예보 시각 : 11시 00분"
+            android:text="@{viewModel.weather.fcstTime}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_pop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="강수확률 : 12%"
+            android:text="@{viewModel.weather.pop}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_fcstTime" />
+
+        <TextView
+            android:id="@+id/tv_pty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="강수형태 : 비"
+            android:text="@{viewModel.weather.pty}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pop" />
+
+        <TextView
+            android:id="@+id/tv_sky"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="하늘상태 : 맑음"
+            android:text="@{viewModel.weather.sky}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pty" />
+
+        <TextView
+            android:id="@+id/tv_tmp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="현재 기온 : 10도"
+            android:text="@{viewModel.weather.tmp}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_sky" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

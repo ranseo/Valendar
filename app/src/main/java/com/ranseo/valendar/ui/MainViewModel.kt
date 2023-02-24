@@ -41,17 +41,33 @@ class MainViewModel @Inject constructor(
 
 
     fun requestWeatherInfo(grid:Pair<String,String>) {
-        val workWeather = PeriodicWorkRequestBuilder<WeatherWorker>(3,
-            TimeUnit.HOURS, 50, TimeUnit.MINUTES)
-            .setInputData(workDataOf(WORKER_KEY_GRID to grid))
-            .setBackoffCriteria(BackoffPolicy.LINEAR, WorkRequest.MIN_BACKOFF_MILLIS,TimeUnit.MILLISECONDS)
+        val workManager = WorkManager.getInstance(getApplication())
+//        val workWeather = PeriodicWorkRequestBuilder<WeatherWorker>(3,
+//            TimeUnit.HOURS, 50, TimeUnit.MINUTES)
+//            .setInputData(workDataOf(WORKER_KEY_GRID to "${grid.first}//${grid.second}"))
+//            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, WorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.MILLISECONDS)
+//            .build()
+//
+//        WorkManager.getInstance(getApplication()).enqueueUniquePeriodicWork(
+//            WEATHER_WORK_UNIQUE_ID, // 고유 작업 아이디
+//            ExistingPeriodicWorkPolicy.KEEP, //해당 작업이 있을 때 아무것도 하지않기.
+//            workWeather
+//        )
+
+        val workWeather = PeriodicWorkRequestBuilder<WeatherWorker>(15,TimeUnit.MINUTES, 15, TimeUnit.MINUTES)
+            .setInputData(workDataOf(WORKER_KEY_GRID to "${grid.first}//${grid.second}"))
             .build()
 
-        WorkManager.getInstance(getApplication()).enqueueUniquePeriodicWork(
-            WEATHER_WORK_UNIQUE_ID, // 고유 작업 아이디
-            ExistingPeriodicWorkPolicy.KEEP, //해당 작업이 있을 때 아무것도 하지않기.
+        workManager.cancelUniqueWork(WEATHER_WORK_UNIQUE_ID)
+
+        workManager.enqueueUniquePeriodicWork(
+            WEATHER_WORK_UNIQUE_ID,
+            ExistingPeriodicWorkPolicy.KEEP,
             workWeather
         )
+
+
+        //WorkManager.getInstance(getApplication()).cancelAllWork()
     }
 
     fun getWeather(

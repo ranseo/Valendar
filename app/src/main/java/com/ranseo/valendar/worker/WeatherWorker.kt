@@ -1,6 +1,7 @@
 package com.ranseo.valendar.worker
 
 import android.content.Context
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
@@ -10,16 +11,24 @@ import com.ranseo.valendar.data.repo.WeatherRepository
 import com.ranseo.valendar.util.FcstBaseTime
 import com.ranseo.valendar.util.Log
 import com.ranseo.valendar.util.LogTag
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import java.sql.Date
 import java.text.SimpleDateFormat
 import javax.inject.Inject
 
-class WeatherWorker(appContext:Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
-    @Inject lateinit var weatherRepository : WeatherRepository
+@HiltWorker
+class WeatherWorker @AssistedInject constructor
+    (@Assisted appContext:Context, @Assisted params: WorkerParameters, private val weatherRepository: WeatherRepository)
+    : CoroutineWorker(appContext, params) {
+
+
 
     override suspend fun doWork(): Result {
         return try {
-            val (nx : String ,ny : String) = inputData.keyValueMap[WORKER_KEY_GRID] as Pair<String,String>? ?: return Result.failure()
+            //inputData.keyValueMap[WORKER_KEY_GRID] as Pair<String,String>? ?: return Result.failure()
+
+            val (nx : String ,ny : String) =inputData.getString(WORKER_KEY_GRID)?.split("//") ?: listOf("1","1")
             val nowDate = Date(System.currentTimeMillis())
             val baseDate = SimpleDateFormat("yyyyMMdd").format(nowDate)
             val baseTime = FcstBaseTime.getFcstBaseTime(SimpleDateFormat("kkmm").format(nowDate))

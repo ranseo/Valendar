@@ -1,6 +1,6 @@
 buildscript {
-    ext.moshi_version = "1.14.0"
-    ext.hilt_version = "2.44"
+    ext.moshi_version = '1.14.0'
+    ext.hilt_version = '2.45'
     ext.squareup_version = "2.9.0"
     ext.nav_version = "2.5.3"
     ext.glide_version = "4.14.1"
@@ -8,11 +8,11 @@ buildscript {
     ext.arch_version = "2.1.0"
     ext.prolific_interactive_version = "2.0.1"
     ext.room_version="2.5.0"
-    ext.work_version = "2.8.0"
+    ext.work_version = '2.8.0'
 
 
     dependencies {
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20-Beta'
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
     }

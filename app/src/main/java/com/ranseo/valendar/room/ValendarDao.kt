@@ -15,7 +15,7 @@ interface ValendarDao {
     @Update
     suspend fun update(weather: WeatherLocalModel)
 
-    @Query("SELECT * FROM weather_table WHERE :baseDate = baseDate")
+    @Query("SELECT * FROM weather_table WHERE :baseDate = base_date")
     suspend fun getWeather(baseDate: Int) : List<WeatherLocalModel>
 
 

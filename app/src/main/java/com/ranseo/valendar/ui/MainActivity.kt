@@ -4,8 +4,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.location.Address
 import android.location.Geocoder
-import android.location.Geocoder.GeocodeListener
+//import android.location.Geocoder.GeocodeListener
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
@@ -30,6 +31,7 @@ import com.ranseo.valendar.util.LogTag
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.Exception
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -59,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         binding.viewModel = mainViewModel
         binding.lifecycleOwner = this
 
-        bottomWeatherSheet = binding.layoutBottomSheet
+        bottomWeatherSheet = binding.layoutBottomSheet.layoutBottomSheet
         sheetBehavior = BottomSheetBehavior.from(bottomWeatherSheet)
 
         sheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -113,41 +115,32 @@ class MainActivity : AppCompatActivity() {
         requestPermission()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            val lon = location.longitude //경도
-            val lat = location.latitude //위도
-            getAddress(lat, lon)
-            Log.log(
-                TAG,
-                "lastLocation() : ${location.toString()}, 위도 : ${lat}, 경도 : ${lon}",
-                LogTag.I
-            )
-            val p: Pair<String, String> = locationConverter.convertLLToXY(lon.toFloat(), lat.toFloat())
-            mainViewModel.setGridLocation(p)
-        }
+        getLastLocation()
 
         locationConverter = LocationConverter()
         geoCoder = Geocoder(this, Locale.KOREA)
+
+        createLocationRequest()
     }
 
     private fun gridLocationObserver() =
-        Observer<Pair<String,String>>{
+        Observer<Pair<String, String>> {
             mainViewModel.requestWeatherInfo(it)
         }
+
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun getAddress(lat: Double, lon: Double) {
         try {
-            geoCoder.getFromLocation(lat, lon, 1, (GeocodeListener {
-
-                if(it.isNotEmpty()) {
-                    val addr = it.get(0).getAddressLine(0).toString()
-                    Log.log(TAG, "getAddress() : ${addr}", LogTag.I)
+            val a = geoCoder.getFromLocation(lat, lon, 1)
+            a?.let {
+                if (a.isNotEmpty()) {
+                    val addr = a[0].getAddressLine(0)
                     mainViewModel.setAddress(addr)
                 }
-            }))
+            }
 
-        } catch (error: java.lang.Exception) {
+        } catch (error: Exception) {
             Log.log(TAG, "getAddress() Failure ${error.message}}", LogTag.I)
         }
     }
@@ -164,6 +157,8 @@ class MainActivity : AppCompatActivity() {
                         this,
                         Manifest.permission.ACCESS_COARSE_LOCATION
                     ) == PackageManager.PERMISSION_GRANTED -> {
+
+
             }
 
             shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) ||
@@ -182,10 +177,37 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    private fun getLastLocation() {
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            try {
+                val lon = location.longitude //경도
+                val lat = location.latitude //위도
+                getAddress(lat, lon)
+                Log.log(
+                    TAG,
+                    "lastLocation() : ${location.toString()}, 위도 : ${lat}, 경도 : ${lon}",
+                    LogTag.I
+                )
+                val p: Pair<String, String> =
+                    locationConverter.convertLLToXY(lon.toFloat(), lat.toFloat())
+                mainViewModel.setGridLocation(p)
+
+            } catch (error: NullPointerException) {
+
+            }
+        }.addOnFailureListener {
+            Log.log(
+                TAG,
+                "lastLocation() failure ${it.message}",
+                LogTag.I
+            )
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.S)
     @SuppressLint("MissingPermission")
     private fun startLocationUpdate() {
-        createLocationRequest()
 
         locationCallback = object : LocationCallback() {
             @SuppressLint("NewApi")
@@ -204,6 +226,8 @@ class MainActivity : AppCompatActivity() {
                     mainViewModel.setGridLocation(p)
                 }
             }
+
+
         }
 
         fusedLocationClient.requestLocationUpdates(
@@ -211,8 +235,10 @@ class MainActivity : AppCompatActivity() {
             locationCallback,
             Looper.getMainLooper()
         ).addOnSuccessListener {
+            Log.log(TAG, "requestLocationUpdates() success", LogTag.I)
             requestingLocationUpdates = true
         }.addOnFailureListener {
+            Log.log(TAG, "requestLocationUpdates() Failure", LogTag.I)
             requestingLocationUpdates = false
         }
     }
@@ -220,7 +246,10 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onResume() {
         super.onResume()
+
+
         if (!requestingLocationUpdates) startLocationUpdate()
+
 
     }
 
@@ -228,7 +257,7 @@ class MainActivity : AppCompatActivity() {
     fun createLocationRequest() {
         locationRequest = LocationRequest.Builder(10 * 60 * 1000)
             .setMaxUpdateDelayMillis(60 * 60 * 1000)
-            .setPriority(android.location.LocationRequest.QUALITY_HIGH_ACCURACY)
+            .setPriority(android.location.LocationRequest.QUALITY_LOW_POWER)
             .build()
 
         val builder = LocationSettingsRequest.Builder()
@@ -297,4 +326,6 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "MainActivity"
         private const val REQUESTING_LOCATION_UPDATES_KEY = "LOCATION_KEY"
     }
+
+
 }

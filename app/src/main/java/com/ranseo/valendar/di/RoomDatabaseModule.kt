@@ -10,7 +10,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import kotlin.reflect.jvm.internal.ReflectProperties.Val
 
 
 @InstallIn(SingletonComponent::class)
