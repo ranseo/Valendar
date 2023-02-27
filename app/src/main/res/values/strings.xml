@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Valendar</string>
+
+    <string name="notification_channel_id">Valendar</string>
+    <string name="notification_title">일기 예보 요청</string>
+
 </resources>

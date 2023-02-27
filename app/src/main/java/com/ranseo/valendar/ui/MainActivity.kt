@@ -204,55 +204,6 @@ class MainActivity : AppCompatActivity() {
             )
         }
     }
-
-    @RequiresApi(Build.VERSION_CODES.S)
-    @SuppressLint("MissingPermission")
-    private fun startLocationUpdate() {
-
-        locationCallback = object : LocationCallback() {
-            @SuppressLint("NewApi")
-            override fun onLocationResult(p0: LocationResult) {
-                for (location in p0.locations) {
-                    val lon = location.longitude //경도
-                    val lat = location.latitude //위도
-                    getAddress(lat, lon)
-                    Log.log(
-                        TAG,
-                        "LocationCallback() : ${location.toString()}, 위도 : ${lat}, 경도 : ${lon}",
-                        LogTag.I
-                    )
-                    val p: Pair<String, String> =
-                        locationConverter.convertLLToXY(lon.toFloat(), lat.toFloat())
-                    mainViewModel.setGridLocation(p)
-                }
-            }
-
-
-        }
-
-        fusedLocationClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.getMainLooper()
-        ).addOnSuccessListener {
-            Log.log(TAG, "requestLocationUpdates() success", LogTag.I)
-            requestingLocationUpdates = true
-        }.addOnFailureListener {
-            Log.log(TAG, "requestLocationUpdates() Failure", LogTag.I)
-            requestingLocationUpdates = false
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.S)
-    override fun onResume() {
-        super.onResume()
-
-
-        if (!requestingLocationUpdates) startLocationUpdate()
-
-
-    }
-
     @RequiresApi(Build.VERSION_CODES.S)
     fun createLocationRequest() {
         locationRequest = LocationRequest.Builder(10 * 60 * 1000)
@@ -287,6 +238,54 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    @SuppressLint("MissingPermission")
+    private fun startLocationUpdate() {
+
+        locationCallback = object : LocationCallback() {
+            @SuppressLint("NewApi")
+            override fun onLocationResult(p0: LocationResult) {
+                for (location in p0.locations) {
+                    val lon = location.longitude //경도
+                    val lat = location.latitude //위도
+                    getAddress(lat, lon)
+                    Log.log(
+                        TAG,
+                        "LocationCallback() : ${location.toString()}, 위도 : ${lat}, 경도 : ${lon}",
+                        LogTag.I
+                    )
+                    val p: Pair<String, String> =
+                        locationConverter.convertLLToXY(lon.toFloat(), lat.toFloat())
+                    mainViewModel.setGridLocation(p)
+                }
+            }
+        }
+
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        ).addOnSuccessListener {
+            Log.log(TAG, "requestLocationUpdates() success", LogTag.I)
+            requestingLocationUpdates = true
+        }.addOnFailureListener {
+            Log.log(TAG, "requestLocationUpdates() Failure", LogTag.I)
+            requestingLocationUpdates = false
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    override fun onResume() {
+        super.onResume()
+
+
+        if (!requestingLocationUpdates) startLocationUpdate()
+
+
+    }
+
+
 
 
     fun showWeatherSheet() {

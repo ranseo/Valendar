@@ -1,0 +1,77 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "1b51df8af5efd71d629fb8bf68ae1c5b",
+    "entities": [
+      {
+        "tableName": "weather_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`base_date` INTEGER NOT NULL, `base_time` INTEGER NOT NULL, `category` TEXT NOT NULL, `fcst_date` INTEGER NOT NULL, `fcst_time` INTEGER NOT NULL, `fcst_value` TEXT NOT NULL, `nx` INTEGER NOT NULL, `ny` INTEGER NOT NULL, PRIMARY KEY(`base_date`, `category`))",
+        "fields": [
+          {
+            "fieldPath": "baseDate",
+            "columnName": "base_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "baseTime",
+            "columnName": "base_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fcstDate",
+            "columnName": "fcst_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fcstTime",
+            "columnName": "fcst_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fcstValue",
+            "columnName": "fcst_value",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nx",
+            "columnName": "nx",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ny",
+            "columnName": "ny",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "base_date",
+            "category"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1b51df8af5efd71d629fb8bf68ae1c5b')"
+    ]
+  }
+}
