@@ -4,6 +4,8 @@ import WeatherRemoteModel
 import com.ranseo.valendar.data.model.business.WeatherLocalModel
 
 data class WeatherUIState(
+    val baseDate : Int,
+    val baseTime: Int,
     val tmp: String,
     val pop: String,
     val pty: String,
@@ -27,6 +29,14 @@ data class WeatherUIState(
                 }
             } else ""
 
+            val baseTime : Int = if(items.isNotEmpty()) {
+                items[0].baseTime
+            } else 0
+
+            val baseDate : Int = if(items.isNotEmpty()) {
+                items[0].baseDate
+            } else 0
+
             for (item in items) {
                 when (item.category) {
                     "TMP" -> {
@@ -45,7 +55,7 @@ data class WeatherUIState(
                 }
             }
 
-            return WeatherUIState(tmp, pop, pty, sky, fcstTime)
+            return WeatherUIState(baseDate, baseTime ,tmp, pop, pty, sky, fcstTime)
         }
 
         private fun convertTmp(tmp: String): String = "현재기온 : ${tmp}ºC"

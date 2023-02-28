@@ -1,9 +1,15 @@
 package com.ranseo.valendar.data.repo
 
 import WeatherRemoteModel
+import android.app.Application
+import android.content.ContentResolver
+import android.content.ContentValues
+import android.net.Uri
+import android.provider.CalendarContract
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.ranseo.valendar.ValendarApplication
 import com.ranseo.valendar.data.datasource.WeatherLocalDataSource
 import com.ranseo.valendar.data.datasource.WeatherRemoteDataSource
 import com.ranseo.valendar.network.WeatherApiService
@@ -21,8 +27,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class WeatherRepository @Inject constructor(private val weatherRemoteDataSource: WeatherRemoteDataSource,
+class WeatherRepository @Inject constructor(
+    private val weatherRemoteDataSource: WeatherRemoteDataSource,
                                             private val weatherLocalDataSource: WeatherLocalDataSource) {
+
 
     suspend fun getWeatherUIState(baseDate: Int) : WeatherUIState {
         val localModel : List<WeatherLocalModel>? =  weatherLocalDataSource.getWeather(baseDate)
@@ -53,6 +61,8 @@ class WeatherRepository @Inject constructor(private val weatherRemoteDataSource:
             }
         }
     }
+
+
 
 
     companion object {
