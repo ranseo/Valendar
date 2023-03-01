@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="300dp"
         android:background="@drawable/boarder_line_black_top_highlight"
         app:behavior_peekHeight="0dp"
         android:padding="20dp"
@@ -64,5 +64,17 @@
             android:text="@{viewModel.weather.tmp}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_sky" />
+
+        <Button
+            android:id="@+id/btn_sync"
+            android:text="데이터 동기화"
+            android:onClick="@{()->viewModel.onDataSync()}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/tv_tmp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
