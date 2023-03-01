@@ -108,14 +108,9 @@ class MainViewModel @Inject constructor(
 
     fun getCalendarInfo() {
         viewModelScope.launch {
-            when(getCalendarInfosUseCase()) {
-//                is Result.Success<String> -> {
-//
-//                }
-//                is Result.Success<List<CalendarInfo>> ->{}
-//                is Result.Error-> {}
-//                else ->{}
-            }
+            val a = getCalendarInfosUseCase()
+
+
         }
     }
 

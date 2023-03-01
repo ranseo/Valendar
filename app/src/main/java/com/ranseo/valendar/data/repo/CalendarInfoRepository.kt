@@ -21,7 +21,7 @@ class CalendarInfoRepository @Inject constructor(
     private val contentResolver = application.contentResolver
 
 
-    suspend fun queryCalendarInfo() : Result<Any> = withContext(Dispatchers.IO){
+    suspend fun queryCalendarInfo() : Result<*> = withContext(Dispatchers.IO){
         val calendar_projection : Array<String> = arrayOf(
             CalendarContract.Calendars._ID,
             CalendarContract.Calendars.ACCOUNT_NAME,
