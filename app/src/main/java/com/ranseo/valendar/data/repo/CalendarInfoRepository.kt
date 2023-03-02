@@ -1,13 +1,9 @@
 package com.ranseo.valendar.data.repo
 
 import android.app.Application
-import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
-import com.ranseo.valendar.data.model.business.CalendarEvent
-import com.ranseo.valendar.util.Log
-import com.ranseo.valendar.util.LogTag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,7 +17,7 @@ class CalendarInfoRepository @Inject constructor(
     private val contentResolver = application.contentResolver
 
 
-    suspend fun queryCalendarInfo() : Result<*> = withContext(Dispatchers.IO){
+    suspend fun queryCalendarInfo() : Result<List<CalendarInfo>> = withContext(Dispatchers.IO){
         val calendar_projection : Array<String> = arrayOf(
             CalendarContract.Calendars._ID,
             CalendarContract.Calendars.ACCOUNT_NAME,
@@ -41,7 +37,7 @@ class CalendarInfoRepository @Inject constructor(
             }
 
             0 -> {
-                Result.Success("쿼리 결과, 테이블의 개수가 0 입니다.")
+                Result.Success(listOf())
             }
 
             else -> {

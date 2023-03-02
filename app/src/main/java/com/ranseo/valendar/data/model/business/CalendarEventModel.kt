@@ -5,10 +5,10 @@ import com.ranseo.valendar.TIMEZONE_WEATHER
 import com.ranseo.valendar.data.model.ui.WeatherUIState
 import java.util.*
 
-data class CalendarEvent(
+data class CalendarEventModel(
     val calId: Long,
-    val dTstart: Long,
-    val dtEnd : Long,
+    val dTStart: Long,
+    val dTEnd : Long,
     val title: String,
     val description: String,
     val timeZone: String
@@ -17,9 +17,9 @@ data class CalendarEvent(
 
     companion object{
         @JvmStatic
-        fun getCalendarEventFromWeather(weather:WeatherUIState) : CalendarEvent {
+        fun getCalendarEventFromWeather(weather:WeatherUIState) : CalendarEventModel {
 
-            val calId = 1L
+            val calId = 3L
             val year = weather.baseDate.toString().substring(0..3).toInt()
             val month = weather.baseDate.toString().substring(4..5).toInt() - 1
             val day = weather.baseDate.toString().substring(6..7).toInt()
@@ -30,7 +30,7 @@ data class CalendarEvent(
                     (hour to min)
                 }
 
-            val dTstart = Calendar.getInstance().run {
+            val dTStart = Calendar.getInstance().run {
                 set(year, month, day,hour, min)
                 timeInMillis
             }
@@ -43,7 +43,7 @@ data class CalendarEvent(
             val description = "${weather.sky}\n${weather.tmp}\n${weather.pty}\n${weather.pop}"
             val timeZone = TIMEZONE_WEATHER
 
-            return CalendarEvent(calId, dTstart, dTEnd, title, description, timeZone)
+            return CalendarEventModel(calId, dTStart, dTEnd, title, description, timeZone)
         }
     }
 

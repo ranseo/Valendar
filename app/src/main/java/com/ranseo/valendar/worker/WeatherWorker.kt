@@ -24,6 +24,8 @@ import kotlinx.coroutines.withContext
 import java.sql.Date
 import java.text.SimpleDateFormat
 import com.ranseo.valendar.R
+import com.ranseo.valendar.WORKER_KEY_GRID_X
+import com.ranseo.valendar.WORKER_KEY_GRID_Y
 
 @HiltWorker
 class WeatherWorker @AssistedInject constructor
@@ -41,7 +43,9 @@ class WeatherWorker @AssistedInject constructor
         try {
             //inputData.keyValueMap[WORKER_KEY_GRID] as Pair<String,String>? ?: return Result.failure()
 
-            val (nx : String ,ny : String) =inputData.getString(WORKER_KEY_GRID)?.split("//") ?: listOf("1","1")
+            val nx : String  =inputData.getString(WORKER_KEY_GRID_X) ?: "1"
+            val ny : String = inputData.getString(WORKER_KEY_GRID_Y) ?: "1"
+
             val nowDate = Date(System.currentTimeMillis())
             val baseDate = SimpleDateFormat("yyyyMMdd").format(nowDate)
             val baseTime = FcstBaseTime.getFcstBaseTime(SimpleDateFormat("kkmm").format(nowDate))
@@ -55,7 +59,7 @@ class WeatherWorker @AssistedInject constructor
             notificationManager.notify(notificationId, createNotification(progress))
 
             Log.log(TAG, "doWork() Success", LogTag.I)
-            val outputData : Data = workDataOf(WORKER_KEY_GRID to "SUCCESS")
+            val outputData : Data = workDataOf(WORKER_KEY_GRID_X to "SUCCESS")
             Result.success(outputData)
         } catch (error:Exception) {
             Log.log(TAG, "doWork() failure : ${error.message}", LogTag.I)

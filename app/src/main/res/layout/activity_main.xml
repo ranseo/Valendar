@@ -33,11 +33,22 @@
             android:layout_marginTop="90dp"
             android:layout_gravity="top|center" />
 
+        <Button
+            android:text="캘린더 정보"
+            android:id="@+id/btn_calendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewModel.getCalendarInfo()}"
+            android:layout_gravity="center"
+            android:layout_marginTop="120dp"
+            />
+
         <include
             android:id="@+id/layout_bottom_sheet"
             layout="@layout/layout_main_bottom_sheet"
             bind:viewModel="@{viewModel}"
             />
+
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
