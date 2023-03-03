@@ -11,6 +11,10 @@
         <variable
             name="writingTime"
             type="String" />
+        
+        <variable
+            name="onClickListener"
+            type="com.ranseo.valendar.ui.OnClickListener" />
 
     </data>
 
@@ -22,6 +26,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:onClick="@{()->onClickListener.onClick()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

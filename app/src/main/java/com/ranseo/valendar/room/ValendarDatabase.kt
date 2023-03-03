@@ -14,10 +14,6 @@ import com.ranseo.valendar.data.model.business.WeatherLocalModel
 abstract class ValendarDatabase : RoomDatabase() {
     abstract fun getValendarDao() : ValendarDao
 
-    val Migration_1_2 = object: Migration(1,2) {
-        override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("CREATE TABLE 'calendar_event_table' ('event_id' INTEGER, 'd_t_start' INTEGER, 'd_t_end' INTEGER, 'title' TEXT, 'description' TEXT, 'time_zone' TEXT, 'cad_id' INTEGER, PRIMARY KEY('event_id'))")
-        }
 
-    }
 }
+

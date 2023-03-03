@@ -22,8 +22,21 @@ data class CalendarEventLocalModel(
     val description: String,
     @ColumnInfo(name="time_zone")
     val timeZone: String,
+    @ColumnInfo(name = "base_time")
+    val baseTime: Int,
     @ColumnInfo(name="cal_id")
     val calId: Long,
 ) {
+
+    constructor(CPModel: CalendarEventCPModel, eventId:Long) : this(
+        eventId = eventId,
+        dTStart= CPModel.dTStart,
+        dTEnd = CPModel.dTEnd,
+        title = CPModel.title,
+        description = CPModel.description,
+        timeZone = CPModel.timeZone,
+        baseTime = CPModel.baseTime,
+        calId = CPModel.calId
+    )
 
 }

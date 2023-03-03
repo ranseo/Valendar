@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.ranseo.valendar.data.Event
 import com.ranseo.valendar.databinding.ActivityMainBinding
+import com.ranseo.valendar.ui.adapter.CalendarEventAdapter
 import com.ranseo.valendar.util.FcstBaseTime
 import com.ranseo.valendar.util.LocationConverter
 import com.ranseo.valendar.util.Log
@@ -32,11 +33,14 @@ import com.ranseo.valendar.util.LogTag
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 import kotlin.Exception
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+
+    @Inject lateinit var calendarEventAdapter: CalendarEventAdapter
 
     private val mainViewModel: MainViewModel by viewModels()
     private lateinit var bottomWeatherSheet: ConstraintLayout
@@ -63,6 +67,19 @@ class MainActivity : AppCompatActivity() {
 
         binding.viewModel = mainViewModel
         binding.lifecycleOwner = this
+
+        calendarEventAdapter.setOnClickListener(
+            object : OnClickListener {
+                override fun onClick() {
+                    Log.log(TAG, "calendarEventAdapter.setOnClickListener() : Success", LogTag.I)
+                }
+
+                override fun onLongClick() : Boolean{
+                    return true
+                }
+
+            }
+        )
 
         bottomWeatherSheet = binding.layoutBottomSheet.layoutBottomSheet
         sheetBehavior = BottomSheetBehavior.from(bottomWeatherSheet)

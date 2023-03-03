@@ -10,11 +10,11 @@ import com.ranseo.valendar.WEATHER_WORK_UNIQUE_ID
 import com.ranseo.valendar.WORKER_KEY_GRID_X
 import com.ranseo.valendar.WORKER_KEY_GRID_Y
 import com.ranseo.valendar.data.Event
-import com.ranseo.valendar.data.model.business.CalendarEventModel
+import com.ranseo.valendar.data.model.business.CalendarEventCPModel
 import com.ranseo.valendar.data.model.ui.WeatherUIState
 import com.ranseo.valendar.domain.GetCalendarInfosUseCase
 import com.ranseo.valendar.domain.GetWeatherUseCase
-import com.ranseo.valendar.domain.WriteCalendarEventUseCase
+import com.ranseo.valendar.domain.InsertCalendarEventCPUseCase
 import com.ranseo.valendar.worker.WeatherWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +22,9 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.ranseo.valendar.data.model.Result
+import com.ranseo.valendar.data.model.business.CalendarEventLocalModel
 import com.ranseo.valendar.data.model.business.CalendarInfo
+import com.ranseo.valendar.domain.InsertCalendarEventLocalUseCase
 import com.ranseo.valendar.util.Log
 import com.ranseo.valendar.util.LogTag
 
@@ -30,8 +32,9 @@ import com.ranseo.valendar.util.LogTag
 class MainViewModel @Inject constructor(
     application: Application,
     val getWeatherUseCase: GetWeatherUseCase,
-    val writeCalendarEventUseCase: WriteCalendarEventUseCase,
-    val getCalendarInfosUseCase: GetCalendarInfosUseCase
+    val insertCalendarEventCPUseCase: InsertCalendarEventCPUseCase,
+    val insertCalendarEventLocalUseCase: InsertCalendarEventLocalUseCase,
+    val getCalendarInfosUseCase: GetCalendarInfosUseCase,
 ) : AndroidViewModel(application) {
 
     private val _address = MutableLiveData<String>()
@@ -104,8 +107,18 @@ class MainViewModel @Inject constructor(
         val weather = weather.value
         weather?.let {
             viewModelScope.launch {
-                val calendarEventModel = CalendarEventModel.getCalendarEventFromWeather(it)
-                writeCalendarEventUseCase(calendarEventModel)
+                val calendarEventCPModel = CalendarEventCPModel.getCalendarEventFromWeather(it)
+                when(val result = insertCalendarEventCPUseCase(calendarEventCPModel)) {
+                    is Result.Success<CalendarEventLocalModel> -> {
+                        Log.log(TAG,"writeCalendarEvent() Success : ${result.data}", LogTag.I)
+                        insertCalendarEventLocalUseCase(result.data)
+                    }
+                    is Result.Error-> {
+                        Log.log(TAG,"writeCalendarEvent() Failure : ${result.exception}", LogTag.I)
+                    }
+                    else -> {}
+                }
+
             }
         }
     }

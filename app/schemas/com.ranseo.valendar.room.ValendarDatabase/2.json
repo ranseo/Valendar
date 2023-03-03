@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "1b51df8af5efd71d629fb8bf68ae1c5b",
+    "identityHash": "69cea1f65abddeb6f3012eca7956d767",
     "entities": [
       {
         "tableName": "weather_table",
@@ -66,12 +66,74 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "calendar_event_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`event_id` INTEGER NOT NULL, `d_t_start` INTEGER NOT NULL, `d_t_end` INTEGER NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `time_zone` TEXT NOT NULL, `base_time` INTEGER NOT NULL, `cal_id` INTEGER NOT NULL, PRIMARY KEY(`event_id`))",
+        "fields": [
+          {
+            "fieldPath": "eventId",
+            "columnName": "event_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dTStart",
+            "columnName": "d_t_start",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dTEnd",
+            "columnName": "d_t_end",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeZone",
+            "columnName": "time_zone",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "baseTime",
+            "columnName": "base_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "calId",
+            "columnName": "cal_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "event_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1b51df8af5efd71d629fb8bf68ae1c5b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '69cea1f65abddeb6f3012eca7956d767')"
     ]
   }
 }

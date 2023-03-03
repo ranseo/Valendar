@@ -28,7 +28,7 @@ interface ValendarDao {
     @Update
     suspend fun updateCalendarEvent(calendarEvent: CalendarEventLocalModel)
 
-    @Query("SELECT * FROM calendar_event_table WHERE (d_t_start BETWEEN :start AND :end) AND (d_t_end BETWEEN :start AND :end)")
+    @Query("SELECT * FROM calendar_event_table WHERE (d_t_start BETWEEN :start AND :end) AND (d_t_end BETWEEN :start AND :end) ORDER BY base_time ASC")
     fun getCalendarEvents(start:Long, end:Long) : Flow<List<CalendarEventLocalModel>>
 
 }
