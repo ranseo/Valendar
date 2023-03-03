@@ -12,9 +12,6 @@ import com.ranseo.valendar.WORKER_KEY_GRID_Y
 import com.ranseo.valendar.data.Event
 import com.ranseo.valendar.data.model.business.CalendarEventCPModel
 import com.ranseo.valendar.data.model.ui.WeatherUIState
-import com.ranseo.valendar.domain.GetCalendarInfosUseCase
-import com.ranseo.valendar.domain.GetWeatherUseCase
-import com.ranseo.valendar.domain.InsertCalendarEventCPUseCase
 import com.ranseo.valendar.worker.WeatherWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,9 +21,12 @@ import javax.inject.Inject
 import com.ranseo.valendar.data.model.Result
 import com.ranseo.valendar.data.model.business.CalendarEventLocalModel
 import com.ranseo.valendar.data.model.business.CalendarInfo
-import com.ranseo.valendar.domain.InsertCalendarEventLocalUseCase
+import com.ranseo.valendar.data.model.ui.CalendarEventUIState
+import com.ranseo.valendar.domain.*
 import com.ranseo.valendar.util.Log
 import com.ranseo.valendar.util.LogTag
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -35,6 +35,7 @@ class MainViewModel @Inject constructor(
     val insertCalendarEventCPUseCase: InsertCalendarEventCPUseCase,
     val insertCalendarEventLocalUseCase: InsertCalendarEventLocalUseCase,
     val getCalendarInfosUseCase: GetCalendarInfosUseCase,
+    val getCalendarEventModelUseCase: GetCalendarEventModelUseCase
 ) : AndroidViewModel(application) {
 
     private val _address = MutableLiveData<String>()
@@ -49,6 +50,8 @@ class MainViewModel @Inject constructor(
     private val _dataSyncBtn = MutableLiveData<Event<Any?>>()
     val dataSyncBtn: LiveData<Event<Any?>> get() = _dataSyncBtn
 
+    private val _calendarEvent = MutableStateFlow<List<CalendarEventUIState>>(emptyList())
+    val calendarEvent : StateFlow<List<CalendarEventUIState>> = _calendarEvent
 
     fun requestWeatherInfo(grid: Pair<String, String>) {
         val workManager = WorkManager.getInstance(getApplication())
@@ -103,25 +106,25 @@ class MainViewModel @Inject constructor(
         _dataSyncBtn.value = Event(Unit)
     }
 
-    fun writeCalendarEvent() {
-        val weather = weather.value
-        weather?.let {
-            viewModelScope.launch {
-                val calendarEventCPModel = CalendarEventCPModel.getCalendarEventFromWeather(it)
-                when(val result = insertCalendarEventCPUseCase(calendarEventCPModel)) {
-                    is Result.Success<CalendarEventLocalModel> -> {
-                        Log.log(TAG,"writeCalendarEvent() Success : ${result.data}", LogTag.I)
-                        insertCalendarEventLocalUseCase(result.data)
-                    }
-                    is Result.Error-> {
-                        Log.log(TAG,"writeCalendarEvent() Failure : ${result.exception}", LogTag.I)
-                    }
-                    else -> {}
-                }
-
-            }
-        }
-    }
+//    fun writeCalendarEvent() {
+//        val weather = weather.value
+//        weather?.let {
+//            viewModelScope.launch {
+//                val calendarEventCPModel = CalendarEventCPModel.getCalendarEventFromWeather(it)
+//                when(val result = insertCalendarEventCPUseCase(calendarEventCPModel)) {
+//                    is Result.Success<CalendarEventLocalModel> -> {
+//                        Log.log(TAG,"writeCalendarEvent() Success : ${result.data}", LogTag.I)
+//                        insertCalendarEventLocalUseCase(result.data)
+//                    }
+//                    is Result.Error-> {
+//                        Log.log(TAG,"writeCalendarEvent() Failure : ${result.exception}", LogTag.I)
+//                    }
+//                    else -> {}
+//                }
+//
+//            }
+//        }
+//    }
 
     fun getCalendarInfo() {
         viewModelScope.launch {
@@ -142,10 +145,11 @@ class MainViewModel @Inject constructor(
 
                 }
             }
-
-
-
         }
+    }
+
+    fun getCalendarEvent(start:Long, end:Long) {
+        getCalendarEventModelUseCase(start, end)
     }
 
     companion object {

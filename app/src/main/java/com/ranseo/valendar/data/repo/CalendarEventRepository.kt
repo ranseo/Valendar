@@ -8,15 +8,31 @@ import com.ranseo.valendar.data.model.business.CalendarEventLocalModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.ranseo.valendar.data.model.Result
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 
 class CalendarEventRepository @Inject constructor(private val calendarEventCPDataSource: CalendarEventCPDataSource, private val calendarEventLocalDataSource: CalendarEventLocalDataSource) {
 
 
-    suspend fun insertCalendarEventCPModel(calendarEvent: CalendarEventCPModel) : Result<CalendarEventLocalModel> = calendarEventCPDataSource.insert(calendarEvent)
+    private suspend fun insertCPModel(calendarEvent: CalendarEventCPModel) : Result<CalendarEventLocalModel> = calendarEventCPDataSource.insert(calendarEvent)
 
-
-    suspend fun insertCalendarEventLocalModel(calendarEvent: CalendarEventLocalModel) {
+    private suspend fun insertLocalModel(calendarEvent: CalendarEventLocalModel) {
         calendarEventLocalDataSource.insert(calendarEvent)
+    }
+
+    fun queryCalendarEventLocalModel(start:Long, end:Long) : Flow<List<CalendarEventLocalModel>> = calendarEventLocalDataSource.query(start, end)
+
+
+    suspend fun insertCPModelAndThenLocalModel(cp: CalendarEventCPModel) = withContext(Dispatchers.IO){
+        when(val res = insertCPModel(cp)) { // Result<CalendarEventLocalModel>
+            is Result.Success<CalendarEventLocalModel> -> {
+                val local = res.data
+                insertLocalModel(local)
+            }
+            is Result.Error -> {
+
+            }
+        }
     }
 
 

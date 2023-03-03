@@ -10,7 +10,7 @@ import com.ranseo.valendar.data.model.business.CalendarEventLocalModel
 import com.ranseo.valendar.data.model.business.WeatherLocalModel
 
 
-@Database(entities = [WeatherLocalModel::class, CalendarEventLocalModel::class], version = 2, exportSchema = true, autoMigrations = [])
+@Database(entities = [WeatherLocalModel::class, CalendarEventLocalModel::class], version = 3, exportSchema = true, autoMigrations = [])
 abstract class ValendarDatabase : RoomDatabase() {
     abstract fun getValendarDao() : ValendarDao
 

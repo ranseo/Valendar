@@ -13,7 +13,7 @@ class CalendarEventLocalDataSource @Inject constructor(private val valendarDao: 
         valendarDao.insertCalendarEvent(calendarEventLocalModel)
     }
 
-    suspend fun getCalendarEvents(start:Long, end:Long) : Flow<List<CalendarEventLocalModel>> {
+    fun query(start:Long, end:Long) : Flow<List<CalendarEventLocalModel>> {
         return valendarDao.getCalendarEvents(start,end)
     }
 

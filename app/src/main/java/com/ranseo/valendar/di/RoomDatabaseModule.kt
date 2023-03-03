@@ -18,27 +18,62 @@ import javax.inject.Singleton
 @Module
 object RoomDatabaseModule {
 
-    private val MIGRATION_1_2 = object: Migration(1,2) {
+    private val MIGRATION_1_2 = object : Migration(1, 2) {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL("CREATE TABLE 'calendar_event_table' ('event_id' INTEGER, 'd_t_start' INTEGER, 'd_t_end' INTEGER, 'title' TEXT, 'description' TEXT, 'time_zone' TEXT, 'base_time' INTEGER, 'cad_id' INTEGER, PRIMARY KEY('event_id'))")
         }
     }
 
+    //Primary key 변동 시  Mirgration 하는 법
+    //Create a new room entity(SQLite table).
+    //Copy all the data from the old room entity(SQLite table) into the new room entity(SQLite table).
+    //Drop the old room entity.
+    //Rename the new room entity(tableName) to the older room entity that has been dropped.
+    private val MIGRATION_2_3 = object : Migration(2, 3) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("CREATE TABLE 'new_weather_table' ('base_date' INTEGER NOT NULL," +
+                    "'base_time' INTEGER NOT NULL," +
+                    "'category' TEXT NOT NULL," +
+                    "'fcst_date' INTEGER NOT NULL," +
+                    "'fcst_time' INTEGER NOT NULL," +
+                    "'fcst_value' TEXT NOT NULL," +
+                    "'nx' INTEGER NOT NULL," +
+                    "'ny' INTEGER NOT NULL," +
+                    "CONSTRAINT primaryKeys PRIMARY KEY ('base_date', 'base_time', 'category')")
+
+            database.execSQL("INSERT INTO new_weather_table(base_date," +
+                    "base_time" +
+                    "category" +
+                    "fcst_date" +
+                    "fcst_time" +
+                    "fcst_value" +
+                    "nx" +
+                    "ny)" +
+                    "SELECT base_date, base_time, category, fcst_date, fcst_time, fcst_value, nx, ny FROM weather_table")
+
+            database.execSQL("DROP TABLE weather_table")
+            database.execSQL("ALTER TABLE new_weather_table RENAME TO weather_table")
+        }
+
+
+    }
+
     @Provides
     @Singleton
     fun provideDatabase(
-        @ApplicationContext context:Context
-    ) : ValendarDatabase{
+        @ApplicationContext context: Context
+    ): ValendarDatabase {
         return Room.databaseBuilder(
             context,
             ValendarDatabase::class.java,
             "valendar_database"
         )
             .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_2_3)
             .fallbackToDestructiveMigration()
             .build()
     }
 
     @Provides
-    fun provideValendarDao(database:ValendarDatabase) : ValendarDao = database.getValendarDao()
+    fun provideValendarDao(database: ValendarDatabase): ValendarDao = database.getValendarDao()
 }

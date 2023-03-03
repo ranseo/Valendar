@@ -8,11 +8,11 @@ import com.ranseo.valendar.data.model.business.CalendarEventLocalModel
 
 class InsertCalendarEventLocalUseCase @Inject constructor(private val calendarEventRepository: CalendarEventRepository) {
 
-    private val calendarEventWriter : suspend (calendarEventLocalModel:CalendarEventLocalModel)-> Unit = {
-        calendarEventRepository.insertCalendarEventLocalModel(it)
-    }
-
-    suspend operator fun invoke(calendarEventLocalModel:CalendarEventLocalModel)  {
-        return calendarEventWriter(calendarEventLocalModel)
-    }
+//    private val calendarEventWriter : suspend (calendarEventLocalModel:CalendarEventLocalModel)-> Unit = {
+//        calendarEventRepository.insertCalendarEventLocalModel(it)
+//    }
+//
+//    suspend operator fun invoke(calendarEventLocalModel:CalendarEventLocalModel)  {
+//        return calendarEventWriter(calendarEventLocalModel)
+//    }
 }

@@ -5,7 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "weather_table", primaryKeys = ["base_date", "category"])
+@Entity(tableName = "weather_table", primaryKeys = ["base_date","base_time","category"])
 data class WeatherLocalModel(
     @ColumnInfo(name = "base_date")
     val baseDate: Int,

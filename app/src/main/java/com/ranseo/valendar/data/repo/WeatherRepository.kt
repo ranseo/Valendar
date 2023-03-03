@@ -33,11 +33,12 @@ class WeatherRepository @Inject constructor(
 
 
     suspend fun getWeatherUIState(baseDate: Int) : WeatherUIState {
-        val localModel : List<WeatherLocalModel>? =  weatherLocalDataSource.getWeather(baseDate)
+        val localModel : List<WeatherLocalModel>? =  weatherLocalDataSource.queryWeather(baseDate)
         return localModel?.let { weather ->
             WeatherUIState.getWeatherUIStateFromItem(weather)
         } ?: WeatherUIState.getWeatherUIStateFromItem(listOf())
     }
+
 
     suspend fun getWeatherRemoteModel(
         numOfRows: Int,
@@ -46,20 +47,13 @@ class WeatherRepository @Inject constructor(
         baseTime: String,
         nx: String,
         ny: String
-    ) = withContext(Dispatchers.IO) {
-        when(val result = weatherRemoteDataSource.getWeather(numOfRows,pageNo,baseDate,baseTime,nx,ny)) {
-            is Result.Success<WeatherRemoteModel.Items> -> {
-                Log.log(TAG, "getWeatherUseCase success :${result.data}", LogTag.I)
+    ) : Result<WeatherRemoteModel.Items> = weatherRemoteDataSource.getWeather(numOfRows,pageNo,baseDate,baseTime,nx,ny)
 
-                val list = WeatherLocalModelContainer.getWeathers(result.data.item).weathers
-                weatherLocalDataSource.insertWeathers(list)
-            }
+    suspend fun queryCountOfWeather(baseDate: Int, baseTime:Int) : Int = weatherLocalDataSource.queryCountOfWeather(baseDate, baseTime)
 
-            is Result.Error -> {
-                Log.log(TAG, "getWeatherUseCase success :${result.exception}", LogTag.I)
-                weatherLocalDataSource.insertWeathers(listOf())
-            }
-        }
+
+    suspend fun insertWeatherLocalModel(weathers: List<WeatherLocalModel>) {
+        weatherLocalDataSource.insertWeathers(weathers)
     }
 
 

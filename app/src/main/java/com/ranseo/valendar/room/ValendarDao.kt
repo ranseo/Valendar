@@ -20,6 +20,9 @@ interface ValendarDao {
     @Query("SELECT * FROM weather_table WHERE :baseDate = base_date")
     suspend fun getWeather(baseDate: Int) : List<WeatherLocalModel>
 
+    @Query("SELECT COUNT(*) FROM weather_table WHERE :baseDate = base_date AND :baseTime = base_time")
+    suspend fun getCountOfWeather(baseDate:Int, baseTime:Int) : Int
+
 
     //CalendarEventLocalModel::class
     @Insert(onConflict = OnConflictStrategy.IGNORE)

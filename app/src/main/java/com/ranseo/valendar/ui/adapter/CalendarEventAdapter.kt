@@ -13,7 +13,7 @@ import javax.inject.Inject
 class CalendarEventAdapter @Inject constructor() : ListAdapter<CalendarEventUIState, CalendarEventAdapter.CalendarEventViewHolder>(CalendarEventUIState.itemCallback()) {
 
 
-    lateinit var onClickListener : OnClickListener
+    private lateinit var onClickListener : OnClickListener
 
     fun setOnClickListener(listener: OnClickListener) {
         onClickListener = listener
