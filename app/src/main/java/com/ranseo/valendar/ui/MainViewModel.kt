@@ -10,7 +10,6 @@ import com.ranseo.valendar.WEATHER_WORK_UNIQUE_ID
 import com.ranseo.valendar.WORKER_KEY_GRID_X
 import com.ranseo.valendar.WORKER_KEY_GRID_Y
 import com.ranseo.valendar.data.Event
-import com.ranseo.valendar.data.model.business.CalendarEventCPModel
 import com.ranseo.valendar.data.model.ui.WeatherUIState
 import com.ranseo.valendar.worker.WeatherWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +18,6 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.ranseo.valendar.data.model.Result
-import com.ranseo.valendar.data.model.business.CalendarEventLocalModel
 import com.ranseo.valendar.data.model.business.CalendarInfo
 import com.ranseo.valendar.data.model.ui.CalendarEventUIState
 import com.ranseo.valendar.domain.*
@@ -32,10 +30,8 @@ import kotlinx.coroutines.flow.StateFlow
 class MainViewModel @Inject constructor(
     application: Application,
     val getWeatherUseCase: GetWeatherUseCase,
-    val insertCalendarEventCPUseCase: InsertCalendarEventCPUseCase,
-    val insertCalendarEventLocalUseCase: InsertCalendarEventLocalUseCase,
     val getCalendarInfosUseCase: GetCalendarInfosUseCase,
-    val getCalendarEventModelUseCase: GetCalendarEventModelUseCase
+    val getCalendarEventIUIStateUseCase: GetCalendarEventIUIStateUseCase
 ) : AndroidViewModel(application) {
 
     private val _address = MutableLiveData<String>()
@@ -50,10 +46,11 @@ class MainViewModel @Inject constructor(
     private val _dataSyncBtn = MutableLiveData<Event<Any?>>()
     val dataSyncBtn: LiveData<Event<Any?>> get() = _dataSyncBtn
 
-    private val _calendarEvent = MutableStateFlow<List<CalendarEventUIState>>(emptyList())
-    val calendarEvent : StateFlow<List<CalendarEventUIState>> = _calendarEvent
+    private val _calendarEvents = MutableStateFlow<List<CalendarEventUIState>>(emptyList())
+    val calendarEvents: StateFlow<List<CalendarEventUIState>> = _calendarEvents
 
     fun requestWeatherInfo(grid: Pair<String, String>) {
+        Log.log(TAG,"requestWeaetherInfo : ${grid.toString()}", LogTag.I)
         val workManager = WorkManager.getInstance(getApplication())
 
 //        val workWeather = PeriodicWorkRequestBuilder<WeatherWorker>(3,
@@ -69,7 +66,7 @@ class MainViewModel @Inject constructor(
 //        )
 
         val workWeather =
-            PeriodicWorkRequestBuilder<WeatherWorker>(1, TimeUnit.HOURS, 30, TimeUnit.MINUTES)
+            PeriodicWorkRequestBuilder<WeatherWorker>(1, TimeUnit.HOURS, 1, TimeUnit.HOURS)
                 .setInputData(workDataOf(WORKER_KEY_GRID_X to grid.first))
                 .setInputData(workDataOf(WORKER_KEY_GRID_Y to grid.second))
                 .build()
@@ -106,32 +103,12 @@ class MainViewModel @Inject constructor(
         _dataSyncBtn.value = Event(Unit)
     }
 
-//    fun writeCalendarEvent() {
-//        val weather = weather.value
-//        weather?.let {
-//            viewModelScope.launch {
-//                val calendarEventCPModel = CalendarEventCPModel.getCalendarEventFromWeather(it)
-//                when(val result = insertCalendarEventCPUseCase(calendarEventCPModel)) {
-//                    is Result.Success<CalendarEventLocalModel> -> {
-//                        Log.log(TAG,"writeCalendarEvent() Success : ${result.data}", LogTag.I)
-//                        insertCalendarEventLocalUseCase(result.data)
-//                    }
-//                    is Result.Error-> {
-//                        Log.log(TAG,"writeCalendarEvent() Failure : ${result.exception}", LogTag.I)
-//                    }
-//                    else -> {}
-//                }
-//
-//            }
-//        }
-//    }
-
     fun getCalendarInfo() {
         viewModelScope.launch {
-            when(val calendarInfos = getCalendarInfosUseCase()) {
+            when (val calendarInfos = getCalendarInfosUseCase()) {
                 is Result.Success<List<CalendarInfo>> -> {
                     val data = calendarInfos.data
-                    if(data.isNotEmpty()) {
+                    if (data.isNotEmpty()) {
                         Log.log(TAG, "getCalendarInfo() Success : ${data}", LogTag.I)
                     } else {
                         Log.log(TAG, "getCalendarInfo() Success, but No Data", LogTag.I)
@@ -139,17 +116,18 @@ class MainViewModel @Inject constructor(
                 }
                 is Result.Error -> {
                     val error = calendarInfos.exception
-                    Log.log(TAG,"getCalendarInfo() Failure ${error.message}", LogTag.I)
-                }
-                else -> {
-
+                    Log.log(TAG, "getCalendarInfo() Failure ${error.message}", LogTag.I)
                 }
             }
         }
     }
 
-    fun getCalendarEvent(start:Long, end:Long) {
-        getCalendarEventModelUseCase(start, end)
+    fun getCalendarEvent(start: Long, end: Long) {
+        viewModelScope.launch {
+            getCalendarEventIUIStateUseCase(start, end).collect {
+                _calendarEvents.value = it
+            }
+        }
     }
 
     companion object {

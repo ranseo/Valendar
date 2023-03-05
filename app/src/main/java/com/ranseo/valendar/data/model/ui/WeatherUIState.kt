@@ -3,6 +3,10 @@ package com.ranseo.valendar.data.model.ui
 import WeatherRemoteModel
 import com.ranseo.valendar.data.model.business.WeatherLocalModel
 
+/**
+ * List<WeatherLocalModel>는 WeatherUIState로 변환
+ * WeatherUIState는 UI에서 사용될 수 있고, CalendarEventBusiness Model로도 변환될 수 있다.
+ * */
 data class WeatherUIState(
     val baseDate : Int,
     val baseTime: Int,
@@ -12,7 +16,6 @@ data class WeatherUIState(
     val sky: String,
     val fcstTime: String
 ) {
-
 
     companion object {
         fun getWeatherUIStateFromItem(items: List<WeatherLocalModel>): WeatherUIState {

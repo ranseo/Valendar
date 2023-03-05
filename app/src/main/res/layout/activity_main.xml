@@ -45,7 +45,7 @@
 
         <include
             android:id="@+id/layout_bottom_sheet"
-            layout="@layout/layout_main_bottom_sheet"
+            layout="@layout/layout_main_bottom_sheet_recycle"
             bind:viewModel="@{viewModel}"
             />
 

@@ -49,7 +49,9 @@ class WeatherRepository @Inject constructor(
         ny: String
     ) : Result<WeatherRemoteModel.Items> = weatherRemoteDataSource.getWeather(numOfRows,pageNo,baseDate,baseTime,nx,ny)
 
+
     suspend fun queryCountOfWeather(baseDate: Int, baseTime:Int) : Int = weatherLocalDataSource.queryCountOfWeather(baseDate, baseTime)
+
 
 
     suspend fun insertWeatherLocalModel(weathers: List<WeatherLocalModel>) {

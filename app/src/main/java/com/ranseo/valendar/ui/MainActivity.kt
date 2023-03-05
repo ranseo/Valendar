@@ -18,7 +18,10 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
@@ -31,6 +34,7 @@ import com.ranseo.valendar.util.LocationConverter
 import com.ranseo.valendar.util.Log
 import com.ranseo.valendar.util.LogTag
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -81,6 +85,7 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
+
         bottomWeatherSheet = binding.layoutBottomSheet.layoutBottomSheet
         sheetBehavior = BottomSheetBehavior.from(bottomWeatherSheet)
 
@@ -96,20 +101,13 @@ class MainActivity : AppCompatActivity() {
         })
 
 
+
         with(binding) {
             layoutCalendar.apply {
                 setOnDateChangeListener { _, year, month, day ->
                     val baseDate = "%d%02d%02d".format(year, month + 1, day)
-                    val date = Date(System.currentTimeMillis())
-                    val currTime = SimpleDateFormat("kkmm").format(date)
-
-                    val baseTime = FcstBaseTime.getFcstBaseTime(currTime)
-                    Log.log(
-                        TAG,
-                        "${baseDate}, currTime : ${currTime} ,baseTime : ${baseTime}",
-                        LogTag.I
-                    )
-                    getWeatherInfo(baseDate.toInt())
+                    val (start,end) = FcstBaseTime.getFcstRange(baseDate)
+                    mainViewModel.getCalendarEvent(start, end)
                     showWeatherSheet()
                 }
             }
@@ -121,11 +119,17 @@ class MainActivity : AppCompatActivity() {
             dataSyncBtn.observe(this@MainActivity, dataSyncBtnObserver())
         }
 
-
-
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainViewModel.calendarEvents.collect{list ->
+                    calendarEventAdapter.submitList(list)
+                }
+            }
+        }
 
         registerAcitivityResultLauncher()
         requestLocationPermission()
+        requestCalendarPermission()
         requestAlarmPermission()
 
 
@@ -307,9 +311,9 @@ class MainActivity : AppCompatActivity() {
         sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    private fun getWeatherInfo(baseDate: Int) {
-        mainViewModel.getWeather(baseDate)
-    }
+//    private fun getWeatherInfo(baseDate: Int) {
+//        mainViewModel.getWeather(baseDate)
+//    }
 
 
     private fun stopLocationUpdates() {
@@ -412,7 +416,7 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.WRITE_CALENDAR
             ) == PackageManager.PERMISSION_GRANTED -> {
 
-                mainViewModel.writeCalendarEvent()
+                //mainViewModel.writeCalendarEvent()
             }
 
             shouldShowRequestPermissionRationale(Manifest.permission.READ_CALENDAR) || shouldShowRequestPermissionRationale(

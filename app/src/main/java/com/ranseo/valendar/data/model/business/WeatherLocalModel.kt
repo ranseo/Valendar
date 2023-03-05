@@ -24,16 +24,6 @@ data class WeatherLocalModel(
     @ColumnInfo(name = "ny")
     val ny : Int
 ) {
-//    constructor(_baseDate: Int,  _baseTime: Int, _category: String, _fcstDate: Int, _fcstTime: Int, _fcstValue: String, _nx: Int , _ny: Int) : this(
-//        baseDate = _baseDate,
-//        baseTime = _baseTime,
-//        category = _category,
-//        fcstDate = _fcstDate,
-//        fcstTime = _fcstTime,
-//        fcstValue = _fcstValue,
-//        nx = _nx,
-//        ny = _ny
-//    )
 }
 
 data class WeatherLocalModelContainer(

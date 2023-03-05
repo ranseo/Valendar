@@ -1,7 +1,6 @@
 package com.ranseo.valendar.ui.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -17,6 +16,7 @@ class CalendarEventAdapter @Inject constructor() : ListAdapter<CalendarEventUISt
 
     fun setOnClickListener(listener: OnClickListener) {
         onClickListener = listener
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarEventViewHolder {
@@ -38,7 +38,7 @@ class CalendarEventAdapter @Inject constructor() : ListAdapter<CalendarEventUISt
             clickListener: OnClickListener
         ) {
             binding.title = item.title
-            binding.writingTime = item.writingTime
+            binding.baseTime = item.baseTime
             binding.onClickListener = clickListener
         }
         companion object {

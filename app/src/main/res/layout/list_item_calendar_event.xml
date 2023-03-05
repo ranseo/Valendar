@@ -9,7 +9,7 @@
             type="String"/>
 
         <variable
-            name="writingTime"
+            name="baseTime"
             type="String" />
         
         <variable
@@ -47,6 +47,7 @@
             <TextView
                 android:id="@+id/tv_event_time"
                 android:textSize="12sp"
+                android:text="@{baseTime}"
                 tools:text="작성시간 : 14시24분"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

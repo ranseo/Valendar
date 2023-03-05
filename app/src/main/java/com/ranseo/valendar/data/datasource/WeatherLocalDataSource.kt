@@ -13,6 +13,10 @@ class WeatherLocalDataSource @Inject constructor(private val valendarDao: Valend
         return valendarDao.getWeather(baseDate)
     }
 
+
+    /**
+     * 만약 해당 baseDate와 baseTime을 가진 테이블이 현재 local database에 없다면 0을 리턴, 그렇지 않다면 1이상의 수 리턴.
+     */
     suspend fun queryCountOfWeather(baseDate: Int, baseTime: Int): Int {
         return valendarDao.getCountOfWeather(baseDate, baseTime)
     }
@@ -21,6 +25,7 @@ class WeatherLocalDataSource @Inject constructor(private val valendarDao: Valend
     suspend fun insertWeather(weather: WeatherLocalModel) {
         valendarDao.insert(weather)
     }
+
 
     suspend fun insertWeathers(weathers: List<WeatherLocalModel>) {
         valendarDao.insert(weathers)

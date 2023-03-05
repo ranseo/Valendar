@@ -49,4 +49,15 @@ data class CalendarEventCPModel(
     }
 }
 
-fun CalendarEventCPModel.asLocalModel(eventId:Long) : CalendarEventLocalModel = CalendarEventLocalModel(this, eventId)
+fun CalendarEventCPModel.asLocalModel(eventId:Long) : CalendarEventLocalModel {
+    return CalendarEventLocalModel(
+        eventId = eventId,
+        dTStart= this.dTStart,
+        dTEnd = this.dTEnd,
+        title = this.title,
+        description = this.description,
+        timeZone = this.timeZone,
+        baseTime = this.baseTime,
+        calId = this.calId
+    )
+}

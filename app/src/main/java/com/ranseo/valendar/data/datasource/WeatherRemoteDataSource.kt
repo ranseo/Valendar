@@ -39,7 +39,7 @@ class WeatherRemoteDataSource @Inject constructor(private val weatherApiService:
             }
 
         } catch (error: Exception) {
-            Log.log(TAG, "getLandFcst() error : ${error.message}", LogTag.I)
+            Log.log(TAG, "getWeather() error : ${error.message}", LogTag.I)
             Result.Error(error)
         }
     }
