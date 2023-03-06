@@ -11,6 +11,10 @@
         <variable
             name="baseTime"
             type="String" />
+
+        <variable
+            name="description"
+            type="String"/>
         
         <variable
             name="onClickListener"
@@ -32,12 +36,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:background="@drawable/boarder_line_shadow"
-
+            android:padding="8dp"
             >
 
             <TextView
                 android:id="@+id/tv_event_title"
                 android:textSize="12sp"
+                android:text="@{title}"
                 tools:text="이벤트 : 일기 예보"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,6 +58,24 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/tv_event_title"
                 app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="120dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/tv_description"
+                android:text="@{description}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@+id/guideline"
+                app:layout_constraintTop_toTopOf="@id/tv_event_title"
+                app:layout_constraintBottom_toBottomOf="@id/tv_event_time"
+                tools:text="오늘날씨 : 맑음, 현재기온 : 8ºC\n강수형태 : 없음, 강수확률 : 0%"
+                />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

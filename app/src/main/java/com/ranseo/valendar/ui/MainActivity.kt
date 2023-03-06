@@ -107,10 +107,15 @@ class MainActivity : AppCompatActivity() {
                 setOnDateChangeListener { _, year, month, day ->
                     val baseDate = "%d%02d%02d".format(year, month + 1, day)
                     val (start,end) = FcstBaseTime.getFcstRange(baseDate)
+                    Log.log(TAG, "layoutCalendar start = ${start}, end = ${end}",LogTag.I)
                     mainViewModel.getCalendarEvent(start, end)
                     showWeatherSheet()
                 }
             }
+
+            layoutBottomSheet.recEvent.adapter = calendarEventAdapter
+
+
         }
 
 
@@ -122,17 +127,17 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mainViewModel.calendarEvents.collect{list ->
+                    Log.log(TAG, "mainViewModel.calendarEvents list = ${list}", LogTag.I)
                     calendarEventAdapter.submitList(list)
                 }
             }
         }
 
         registerAcitivityResultLauncher()
-        requestLocationPermission()
-        requestCalendarPermission()
+
         requestAlarmPermission()
-
-
+        requestCalendarPermission()
+        requestLocationPermission()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         getLastLocation()

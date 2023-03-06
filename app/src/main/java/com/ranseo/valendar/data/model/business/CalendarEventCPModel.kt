@@ -41,7 +41,7 @@ data class CalendarEventCPModel(
                 timeInMillis
             }
             val title = CALENDAR_EVENT_WEATHER_TITLE
-            val description = "${weather.sky}\n${weather.tmp}\n${weather.pty}\n${weather.pop}"
+            val description = "${weather.sky},${weather.tmp}\n${weather.pty},${weather.pop}"
             val timeZone = TIMEZONE_WEATHER
 
             return CalendarEventCPModel(calId, dTStart, dTEnd, title, description, timeZone, baseTime)

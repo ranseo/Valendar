@@ -40,6 +40,7 @@ class CalendarEventAdapter @Inject constructor() : ListAdapter<CalendarEventUISt
             binding.title = item.title
             binding.baseTime = item.baseTime
             binding.onClickListener = clickListener
+            binding.description = item.description
         }
         companion object {
             fun from(parent: ViewGroup): CalendarEventViewHolder {

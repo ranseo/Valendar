@@ -63,11 +63,12 @@ class WeatherWorker @AssistedInject constructor
                     val result = "일기 예보 요청 결과" +
                             "\n${res.data.baseTime}\n${res.data.description}"
 
-                    //setForeground(createForegroundInfo(progress))
-                    notificationManager.notify(notificationId, createNotification(result))
+                    setForeground(createForegroundInfo(result))
+                    //notificationManager.notify(notificationId, createNotification(result))
                     Log.log(TAG, "notify() Success : ${res.data}", LogTag.I)
                 }
                 is MyResult.Error -> {
+                    setForeground(createForegroundInfo(""))
                     Log.log(TAG, "notify() failure : ${res.exception}", LogTag.I)
                 }
             }
@@ -96,7 +97,9 @@ class WeatherWorker @AssistedInject constructor
         return NotificationCompat.Builder(applicationContext, id)
             .setContentTitle(title)
             .setTicker(title)
-            .setContentText(content)
+            .setContentText("오늘 날씨")
+            .setStyle(NotificationCompat.BigTextStyle()
+                .bigText(content))
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setOngoing(false)
             .build()
@@ -105,7 +108,6 @@ class WeatherWorker @AssistedInject constructor
     private fun createForegroundInfo(progress: String) : ForegroundInfo {
         val notification = createNotification(progress)
         return ForegroundInfo(notificationId, notification)
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

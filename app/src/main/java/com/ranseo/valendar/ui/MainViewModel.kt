@@ -66,7 +66,7 @@ class MainViewModel @Inject constructor(
 //        )
 
         val workWeather =
-            PeriodicWorkRequestBuilder<WeatherWorker>(1, TimeUnit.HOURS, 1, TimeUnit.HOURS)
+            PeriodicWorkRequestBuilder<WeatherWorker>(15, TimeUnit.MINUTES, 15, TimeUnit.MINUTES)
                 .setInputData(workDataOf(WORKER_KEY_GRID_X to grid.first))
                 .setInputData(workDataOf(WORKER_KEY_GRID_Y to grid.second))
                 .build()
