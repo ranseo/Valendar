@@ -5,6 +5,9 @@
 
     <data>
         <variable
+            name="calendarEvent"
+            type="com.ranseo.valendar.data.model.ui.CalendarEventUIState" />
+        <variable
             name="title"
             type="String"/>
 
@@ -30,7 +33,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:onClick="@{()->onClickListener.onClick()}"
+            android:onClick="@{()->onClickListener.onClick(calendarEvent)}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

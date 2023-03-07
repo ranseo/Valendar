@@ -12,9 +12,9 @@ import javax.inject.Inject
 class CalendarEventAdapter @Inject constructor() : ListAdapter<CalendarEventUIState, CalendarEventAdapter.CalendarEventViewHolder>(CalendarEventUIState.itemCallback()) {
 
 
-    private lateinit var onClickListener : OnClickListener
+    private lateinit var onClickListener : OnClickListener<CalendarEventUIState>
 
-    fun setOnClickListener(listener: OnClickListener) {
+    fun setOnClickListener(listener: OnClickListener<CalendarEventUIState>) {
         onClickListener = listener
 
     }
@@ -35,7 +35,7 @@ class CalendarEventAdapter @Inject constructor() : ListAdapter<CalendarEventUISt
     class CalendarEventViewHolder(val binding: ListItemCalendarEventBinding) : ViewHolder(binding.root) {
         fun bind(
             item: CalendarEventUIState,
-            clickListener: OnClickListener
+            clickListener: OnClickListener<CalendarEventUIState>
         ) {
             binding.title = item.title
             binding.baseTime = item.baseTime

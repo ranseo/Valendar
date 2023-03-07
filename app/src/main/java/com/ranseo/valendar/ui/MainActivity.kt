@@ -18,6 +18,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -26,9 +27,11 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.ranseo.valendar.FRAGMENT_KEY_CALENDAR_EVENT
 import com.ranseo.valendar.data.Event
 import com.ranseo.valendar.databinding.ActivityMainBinding
 import com.ranseo.valendar.ui.adapter.CalendarEventAdapter
+import com.ranseo.valendar.ui.fragment.CalendarEventFragment
 import com.ranseo.valendar.util.FcstBaseTime
 import com.ranseo.valendar.util.LocationConverter
 import com.ranseo.valendar.util.Log
@@ -39,6 +42,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.Exception
+import com.ranseo.valendar.R
+import com.ranseo.valendar.data.model.ui.CalendarEventUIState
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -73,11 +78,16 @@ class MainActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
 
         calendarEventAdapter.setOnClickListener(
-            object : OnClickListener {
-                override fun onClick() {
+            object : OnClickListener<CalendarEventUIState> {
+                override fun <T> onClick(p0: T) {
                     Log.log(TAG, "calendarEventAdapter.setOnClickListener() : Success", LogTag.I)
+                    when(p0) {
+                        is CalendarEventUIState -> {
+                            addFragment(p0)
+                        }
+                        else -> {}
+                    }
                 }
-
                 override fun onLongClick() : Boolean{
                     return true
                 }
@@ -155,6 +165,21 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         stopLocationUpdates()
     }
+
+
+    /**
+     * CalenarEventFragment commit
+     * */
+    private fun addFragment(calendarEvent:CalendarEventUIState) {
+        val fragment = CalendarEventFragment()
+        fragment.arguments = bundleOf(FRAGMENT_KEY_CALENDAR_EVENT to calendarEvent)
+        supportFragmentManager.beginTransaction()
+            .add(R.id.layout_calendar_event, fragment,TAG_FRAGMENT_CALENDAR_EVENT)
+            .addToBackStack(TAG)
+            .commit()
+    }
+
+
 
 
     /**
@@ -462,5 +487,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "MainActivity"
         private const val REQUESTING_LOCATION_UPDATES_KEY = "LOCATION_KEY"
+        private const val TAG_FRAGMENT_CALENDAR_EVENT = "FragmentTagCalendarEvent"
     }
 }

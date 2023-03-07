@@ -1,5 +1,7 @@
 package com.ranseo.valendar.data.model.ui
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
 import com.ranseo.valendar.CALENDAR_EVENT_WEATHER_TITLE
 import com.ranseo.valendar.TIMEZONE_WEATHER
@@ -14,14 +16,52 @@ data class CalendarEventUIState(
     val eventId: Long,
     val baseTime: String,
     val dTStart: Long,
-    val dtEnd: Long,
+    val dTEnd: Long,
     val title: String,
     val description: String,
     val timeZone: String
-) {
+) : Parcelable {
 
 
-    companion object {
+    constructor(parcel: Parcel) : this(
+        parcel.readLong(),
+        parcel.readLong(),
+        parcel.readString() ?: "",
+        parcel.readLong(),
+        parcel.readLong(),
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: ""
+    ) {
+    }
+
+
+
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(calId)
+        parcel.writeLong(eventId)
+        parcel.writeString(baseTime)
+        parcel.writeLong(dTStart)
+        parcel.writeLong(dTEnd)
+        parcel.writeString(title)
+        parcel.writeString(description)
+        parcel.writeString(timeZone)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<CalendarEventUIState> {
+        override fun createFromParcel(parcel: Parcel): CalendarEventUIState {
+            return CalendarEventUIState(parcel)
+        }
+
+        override fun newArray(size: Int): Array<CalendarEventUIState?> {
+            return arrayOfNulls(size)
+        }
+
         fun itemCallback() = object : DiffUtil.ItemCallback<CalendarEventUIState>() {
             override fun areItemsTheSame(
                 oldItem: CalendarEventUIState,
@@ -33,6 +73,10 @@ data class CalendarEventUIState(
                 newItem: CalendarEventUIState
             ): Boolean = oldItem == newItem
 
+        }
+
+        fun getEmpty() : CalendarEventUIState {
+            return CalendarEventUIState(0L,0L,"",0L,0L,"","","")
         }
     }
 }
@@ -48,7 +92,7 @@ data class CalendarEventUIStateContainer(
                     eventId = it.eventId,
                     baseTime = convertBaseTimeAsString( it.baseTime),
                     dTStart =  it.dTStart,
-                    dtEnd = it.dTEnd,
+                    dTEnd = it.dTEnd,
                     title = it.title,
                     description = it.description,
                     timeZone = it.timeZone
