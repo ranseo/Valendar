@@ -11,6 +11,16 @@
         <variable
             name="col"
             type="String" />
+
+        <variable
+            name="tag"
+            type="com.ranseo.valendar.ui.fragment.UpdateTag" />
+        <variable
+            name="viewModel"
+            type="com.ranseo.valendar.ui.fragment.CalendarEventViewModel"
+            />
+
+        <import type="android.text.TextWatcher"/>
     </data>
 
     <LinearLayout
@@ -36,7 +46,9 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:text="@{col}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:onTextChanged="@{(text,start,before,count)->viewModel.onTextChanged(text,start,before,count,tag)}"
+                />
 
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>

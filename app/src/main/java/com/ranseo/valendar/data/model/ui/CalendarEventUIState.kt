@@ -114,7 +114,7 @@ data class CalendarEventUIStateContainer(
             })
         }
 
-        private fun convertBaseTimeAsString(baseTime: Int): String {
+        fun convertBaseTimeAsString(baseTime: Int): String {
             return run {
                 val time = ("%04d".format(baseTime))
                 "${time.substring(0, 2)}시${time.substring(2, 4)}분"

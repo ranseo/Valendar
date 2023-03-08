@@ -14,7 +14,10 @@ import com.ranseo.valendar.FRAGMENT_KEY_CALENDAR_EVENT
 import com.ranseo.valendar.R
 import com.ranseo.valendar.data.model.ui.CalendarEventUIState
 import com.ranseo.valendar.databinding.FragmentCalendarEventBinding
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CalendarEventFragment : Fragment() {
 
     lateinit var binding: FragmentCalendarEventBinding
@@ -28,6 +31,8 @@ class CalendarEventFragment : Fragment() {
         calendarEvent =
             arguments?.getParcelable(FRAGMENT_KEY_CALENDAR_EVENT, CalendarEventUIState::class.java)
                 ?: CalendarEventUIState.getEmpty()
+
+
     }
 
     override fun onCreateView(
@@ -50,6 +55,7 @@ class CalendarEventFragment : Fragment() {
         with(binding) {
             lifecycleOwner = viewLifecycleOwner
             viewModel = calendarEventViewModel
+            calendarEventViewModel.setCalendarEvent(calendarEvent!!)
             calendarEvent = calendarEvent
         }
     }
