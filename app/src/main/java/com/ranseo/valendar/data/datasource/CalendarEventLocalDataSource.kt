@@ -17,4 +17,12 @@ class CalendarEventLocalDataSource @Inject constructor(private val valendarDao: 
         return valendarDao.getCalendarEvents(start,end)
     }
 
+    suspend fun update(calendarEvent:CalendarEventLocalModel) = withContext(Dispatchers.IO) {
+        valendarDao.updateCalendarEvent(calendarEvent)
+    }
+
+    suspend fun delete(calendarEvent:CalendarEventLocalModel) = withContext(Dispatchers.IO) {
+        valendarDao.deleteCalendarEvent(calendarEvent.eventId)
+    }
+
 }

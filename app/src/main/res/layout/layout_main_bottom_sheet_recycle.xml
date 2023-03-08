@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="400dp"
         android:background="@drawable/boarder_line_black_top_highlight"
         app:behavior_peekHeight="0dp"
         android:padding="20dp"
@@ -30,7 +30,7 @@
             app:layout_constraintBottom_toTopOf="@+id/btn_sync"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/list_item_calendar_event"
-            tools:itemCount="3"
+            tools:itemCount="5"
             />
 
         <Button

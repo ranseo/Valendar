@@ -63,12 +63,14 @@ class WeatherWorker @AssistedInject constructor
                     val result = "일기 예보 요청 결과" +
                             "\n${res.data.baseTime}\n${res.data.description}"
 
-                    setForeground(createForegroundInfo(result))
-                    //notificationManager.notify(notificationId, createNotification(result))
+                    //setForeground(createForegroundInfo(result))
+                    notificationManager.notify(notificationId, createNotification(result))
                     Log.log(TAG, "notify() Success : ${res.data}", LogTag.I)
                 }
+
                 is MyResult.Error -> {
-                    setForeground(createForegroundInfo(""))
+                    val tmp = "일기 예보 요청 중"
+                    notificationManager.notify(notificationId, createNotification(tmp))
                     Log.log(TAG, "notify() failure : ${res.exception}", LogTag.I)
                 }
             }
@@ -102,6 +104,8 @@ class WeatherWorker @AssistedInject constructor
                 .bigText(content))
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setOngoing(false)
+            .setVibrate(longArrayOf(0))
+            .setPriority(NotificationCompat.PRIORITY_MIN)
             .build()
     }
 
@@ -115,13 +119,13 @@ class WeatherWorker @AssistedInject constructor
         NotificationChannel(
             notificationChannelId,
             "일기 예보 알림",
-            NotificationManager.IMPORTANCE_HIGH
+            NotificationManager.IMPORTANCE_MIN
         ).let {
             it.description = "일기 예보 알림 서비스"
             it.enableLights(true)
             it.lightColor= Color.BLUE
-            it.enableVibration(true)
-            it.vibrationPattern = longArrayOf(100,200,100,200,100,200)
+            it.enableVibration(false)
+            it.vibrationPattern = longArrayOf(0)
             notificationManager.createNotificationChannel(it)
         }
     }

@@ -16,7 +16,6 @@ class CalendarEventAdapter @Inject constructor() : ListAdapter<CalendarEventUISt
 
     fun setOnClickListener(listener: OnClickListener<CalendarEventUIState>) {
         onClickListener = listener
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarEventViewHolder {
@@ -41,6 +40,7 @@ class CalendarEventAdapter @Inject constructor() : ListAdapter<CalendarEventUISt
             binding.baseTime = item.baseTime
             binding.onClickListener = clickListener
             binding.description = item.description
+            binding.calendarEvent = item
         }
         companion object {
             fun from(parent: ViewGroup): CalendarEventViewHolder {

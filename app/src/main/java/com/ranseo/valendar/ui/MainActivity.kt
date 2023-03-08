@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -80,12 +81,16 @@ class MainActivity : AppCompatActivity() {
         calendarEventAdapter.setOnClickListener(
             object : OnClickListener<CalendarEventUIState> {
                 override fun <T> onClick(p0: T) {
-                    Log.log(TAG, "calendarEventAdapter.setOnClickListener() : Success", LogTag.I)
+                    
+                    Log.log(TAG, "calendarEventAdapter.setOnClickListener() : ${p0}", LogTag.I)
                     when(p0) {
                         is CalendarEventUIState -> {
+                            Toast.makeText(this@MainActivity, "여기두 성공", Toast.LENGTH_SHORT).show()
                             addFragment(p0)
                         }
-                        else -> {}
+                        else -> {
+                            Toast.makeText(this@MainActivity, "여기두 실패", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
                 override fun onLongClick() : Boolean{
@@ -177,6 +182,8 @@ class MainActivity : AppCompatActivity() {
             .add(R.id.layout_calendar_event, fragment,TAG_FRAGMENT_CALENDAR_EVENT)
             .addToBackStack(TAG)
             .commit()
+
+
     }
 
 
@@ -239,9 +246,9 @@ class MainActivity : AppCompatActivity() {
      * */
     @RequiresApi(Build.VERSION_CODES.S)
     fun createLocationRequest() {
-        locationRequest = LocationRequest.Builder(10 * 60 * 1000)
-            .setMaxUpdateDelayMillis(60 * 60 * 1000)
-            .setPriority(android.location.LocationRequest.QUALITY_LOW_POWER)
+        locationRequest = LocationRequest.Builder(60 * 1000)
+            .setMaxUpdateDelayMillis(60 * 1000)
+            .setPriority(android.location.LocationRequest.QUALITY_BALANCED_POWER_ACCURACY)
             .build()
 
         val builder = LocationSettingsRequest.Builder()
@@ -372,10 +379,10 @@ class MainActivity : AppCompatActivity() {
         { permissions ->
             when {
                 permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                    createLocationRequest()
+                    //createLocationRequest()
                 }
                 permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                    createLocationRequest()
+                    //createLocationRequest()
                 }
                 permissions.getOrDefault(Manifest.permission.READ_CALENDAR, false) -> {
 

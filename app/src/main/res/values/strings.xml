@@ -5,5 +5,9 @@
     <string name="notification_title">일기 예보 요청</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <string name="calendar_event_title">제목</string>
+    <string name="calendar_event_basetime">작성 시간</string>
+    <string name="calendar_event_start">시작 시간</string>
+    <string name="calendar_event_end">종료 시간</string>
+    <string name="calendar_event_description">내용</string>
 </resources>

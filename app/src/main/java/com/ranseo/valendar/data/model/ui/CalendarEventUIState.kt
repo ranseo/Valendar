@@ -35,9 +35,10 @@ data class CalendarEventUIState(
     ) {
     }
 
-
-
-
+    fun convertBaseTimeAsInt(baseTime:String) : Int {
+        val pattern = Regex("[시분]") // "시" 또는 "분" 문자열을 찾는 정규표현식
+        return pattern.replace(baseTime, "").toInt()
+    }
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(calId)
         parcel.writeLong(eventId)
@@ -81,6 +82,19 @@ data class CalendarEventUIState(
     }
 }
 
+fun CalendarEventUIState.asLocalModel() : CalendarEventLocalModel{
+    return CalendarEventLocalModel(
+        eventId = this.eventId,
+        dTStart = this.dTStart,
+        dTEnd = this.dTEnd,
+        title = this.title,
+        description = this.description,
+        timeZone = this.timeZone,
+        calId = this.calId,
+        baseTime = this.convertBaseTimeAsInt(this.baseTime)
+    )
+}
+
 data class CalendarEventUIStateContainer(
     val calendarEvent: List<CalendarEventUIState>
 ) {
@@ -100,7 +114,7 @@ data class CalendarEventUIStateContainer(
             })
         }
 
-        fun convertBaseTimeAsString(baseTime: Int): String {
+        private fun convertBaseTimeAsString(baseTime: Int): String {
             return run {
                 val time = ("%04d".format(baseTime))
                 "${time.substring(0, 2)}시${time.substring(2, 4)}분"

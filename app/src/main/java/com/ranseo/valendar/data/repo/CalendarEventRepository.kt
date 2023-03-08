@@ -1,6 +1,8 @@
 package com.ranseo.valendar.data.repo
 
 import android.app.Application
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.ranseo.valendar.data.datasource.CalendarEventCPDataSource
 import com.ranseo.valendar.data.datasource.CalendarEventLocalDataSource
 import com.ranseo.valendar.data.model.business.CalendarEventCPModel
@@ -39,6 +41,17 @@ class CalendarEventRepository @Inject constructor(private val calendarEventCPDat
                 Result.Error(res.exception)
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    suspend fun updateCalendarEvent(calendarEvent: CalendarEventLocalModel) {
+        calendarEventCPDataSource.update(calendarEvent)
+        calendarEventLocalDataSource.update(calendarEvent)
+    }
+
+    suspend fun deleteCalendarEvent(calendarEvent: CalendarEventLocalModel) {
+        calendarEventCPDataSource.delete(calendarEvent)
+        calendarEventLocalDataSource.delete(calendarEvent)
     }
 
 

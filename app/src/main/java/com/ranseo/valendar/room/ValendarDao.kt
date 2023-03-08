@@ -34,4 +34,6 @@ interface ValendarDao {
     @Query("SELECT * FROM calendar_event_table WHERE (d_t_start BETWEEN :start AND :end) AND (d_t_end BETWEEN :start AND :end) ORDER BY base_time ASC")
     fun getCalendarEvents(start:Long, end:Long) : Flow<List<CalendarEventLocalModel>>
 
+    @Query("DELETE FROM calendar_event_table WHERE event_id = :eventId")
+    fun deleteCalendarEvent(eventId:Long)
 }
