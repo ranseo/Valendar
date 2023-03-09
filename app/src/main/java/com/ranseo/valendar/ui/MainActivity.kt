@@ -85,11 +85,9 @@ class MainActivity : AppCompatActivity() {
                     Log.log(TAG, "calendarEventAdapter.setOnClickListener() : ${p0}", LogTag.I)
                     when(p0) {
                         is CalendarEventUIState -> {
-                            Toast.makeText(this@MainActivity, "여기두 성공", Toast.LENGTH_SHORT).show()
                             addFragment(p0)
                         }
                         else -> {
-                            Toast.makeText(this@MainActivity, "여기두 실패", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }

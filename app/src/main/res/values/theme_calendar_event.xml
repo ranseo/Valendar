@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.Calendar" parent="Theme.Valendar">
         <!-- Primary brand color. -->
-        <item name="android:textSize">32sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:gravity">center</item>
     </style>

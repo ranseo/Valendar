@@ -66,36 +66,131 @@
                 tools:text="124" />
         </LinearLayout>
 
-        <include
-            layout="@layout/layout_calendar_event_update"
-            bind:col="@{calendarEvent.title}"
-            bind:row="@{@string/calendar_event_title}"
-            bind:tag="@{UpdateTag.TITLE}"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:theme="@style/Theme.Calendar">
 
-        <include
-            layout="@layout/layout_calendar_event_update"
-            bind:col="@{calendarEvent.baseTime}"
-            bind:row="@{@string/calendar_event_basetime}"
-            bind:tag="@{UpdateTag.BASETIME}"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:background="@color/grey"
+                android:text="@{@string/calendar_event_title}"
+                tools:text="@{@string/calendar_event_title}"/>
 
-        <include
-            layout="@layout/layout_calendar_event_update"
-            bind:col="@{Long.toString(calendarEvent.dTStart)}"
-            bind:row="@{@string/calendar_event_start}"
-            bind:tag="@{UpdateTag.DTSTART}"/>
+            <EditText
+                android:text="@{calendarEvent.title}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onTextChanged="@{(s,start,before,count)->viewModel.onTextChanged(s, UpdateTag.TITLE)}"
+                android:imeOptions="actionDone"
+                android:layout_weight="0.5"
+                android:hint="입 력"
+                android:inputType="text"
+                />
+        </LinearLayout>
 
-        <include
-            layout="@layout/layout_calendar_event_update"
-            bind:col="@{Long.toString(calendarEvent.dTEnd)}"
-            bind:row="@{@string/calendar_event_end}"
-            bind:tag="@{UpdateTag.DTEND}"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:theme="@style/Theme.Calendar">
 
-        <include
-            layout="@layout/layout_calendar_event_update"
-            bind:col="@{calendarEvent.description}"
-            bind:row="@{@string/calendar_event_description}"
-            bind:tag="@{UpdateTag.DESCRIPTION}"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:background="@color/grey"
+                android:text="@{@string/calendar_event_basetime}" />
 
+            <EditText
+                android:text="@{calendarEvent.baseTime}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onTextChanged="@{(s,start,before,count)->viewModel.onTextChanged(s, UpdateTag.BASETIME)}"
+                android:imeOptions="actionDone"
+                android:layout_weight="0.5"
+                android:hint="입 력"
+                android:inputType="text"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:theme="@style/Theme.Calendar">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:background="@color/grey"
+                android:text="@{@string/calendar_event_start}" />
+
+            <EditText
+                android:text="@{Long.toString(calendarEvent.dTStart)}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onTextChanged="@{(s,start,before,count)->viewModel.onTextChanged(s, UpdateTag.DTSTART)}"
+                android:imeOptions="actionDone"
+                android:layout_weight="0.5"
+                android:hint="입 력"
+                android:inputType="text"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:theme="@style/Theme.Calendar">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:background="@color/grey"
+                android:text="@{@string/calendar_event_end}" />
+
+            <EditText
+                android:text="@{Long.toString(calendarEvent.dTEnd)}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onTextChanged="@{(s,start,before,count)->viewModel.onTextChanged(s, UpdateTag.DTEND)}"
+                android:imeOptions="actionDone"
+                android:layout_weight="0.5"
+                android:hint="입 력"
+                android:inputType="text"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:theme="@style/Theme.Calendar">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:background="@color/grey"
+                android:text="@{@string/calendar_event_description}" />
+
+            <EditText
+                android:text="@{calendarEvent.description}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onTextChanged="@{(s,start,before,count)->viewModel.onTextChanged(s, UpdateTag.DESCRIPTION)}"
+                android:imeOptions="actionDone"
+                android:layout_weight="0.5"
+                android:hint="입 력"
+                android:inputType="text"
+                />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

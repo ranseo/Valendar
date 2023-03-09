@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="row"
             type="String" />
@@ -15,12 +16,12 @@
         <variable
             name="tag"
             type="com.ranseo.valendar.ui.fragment.UpdateTag" />
+
         <variable
             name="viewModel"
-            type="com.ranseo.valendar.ui.fragment.CalendarEventViewModel"
-            />
+            type="com.ranseo.valendar.ui.fragment.CalendarEventViewModel" />
 
-        <import type="android.text.TextWatcher"/>
+        <import type="android.text.TextWatcher" />
     </data>
 
     <LinearLayout
@@ -30,26 +31,25 @@
         android:theme="@style/Theme.Calendar">
 
         <TextView
-            android:text="@{row}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:background="@color/grey" />
+            android:background="@color/grey"
+            android:text="@{row}" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <EditText
+            android:text="@{col}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onTextChanged="@{(s,start,before,count)->viewModel.onTextChanged(s,tag)}"
+            android:imeOptions="actionDone"
             android:layout_weight="0.5"
-            tools:hint="Enter Text"
+            android:hint="입 력"
+            android:inputType="text"
 
-            >
-            <com.google.android.material.textfield.TextInputEditText
-                android:text="@{col}"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onTextChanged="@{(text,start,before,count)->viewModel.onTextChanged(text,start,before,count,tag)}"
-                />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            />
+
+
     </LinearLayout>
 </layout>

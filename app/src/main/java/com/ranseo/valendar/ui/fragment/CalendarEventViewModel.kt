@@ -6,13 +6,17 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.ranseo.valendar.data.Event
 import com.ranseo.valendar.data.model.ui.CalendarEventUIState
 import com.ranseo.valendar.data.model.ui.CalendarEventUIStateContainer
 import com.ranseo.valendar.domain.DeleteCalendarEventUseCase
 import com.ranseo.valendar.domain.UpdateCalendarEventUseCase
+import com.ranseo.valendar.util.Log
+import com.ranseo.valendar.util.LogTag
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.ranseo.valendar.data.model.Result as MyResult
 
 enum class UpdateTag {
     TITLE,
@@ -35,6 +39,9 @@ class CalendarEventViewModel @Inject constructor(
     private val _isUpdate = MutableLiveData<Boolean>(false)
     val isUpdate : LiveData<Boolean> get() = _isUpdate
 
+    private val _isDeleted = MutableLiveData<Event<Any?>>()
+    val isDeleted : LiveData<Event<Any?>> get() = _isDeleted
+
     var calId : Long = 0L
     var eventId:Long = 0L
     var title : String = ""
@@ -54,7 +61,7 @@ class CalendarEventViewModel @Inject constructor(
             description = description,
             baseTime =baseTime,
             timeZone = timeZone)
-
+        Log.log(TAG, "updateCalendarEvent() : calendarEventUIState : ${new}", LogTag.I)
         viewModelScope.launch {
             updateCalendarEventUseCase(new)
         }
@@ -63,7 +70,15 @@ class CalendarEventViewModel @Inject constructor(
 
     fun deleteCalendarEvent(calendarEvent: CalendarEventUIState) {
         viewModelScope.launch {
-            deleteCalendarEventUseCase(calendarEvent)
+            when(val res = deleteCalendarEventUseCase(calendarEvent)) {
+                is MyResult.Success<Int> -> {
+                    Log.log(TAG, "deleteCalendarEvent :${res.data}",LogTag.I)
+                    _isDeleted.value = Event(Unit)
+                }
+                is MyResult.Error -> {
+
+                }
+            }
         }
     }
 
@@ -72,7 +87,8 @@ class CalendarEventViewModel @Inject constructor(
     }
 
 
-    fun onTextChanged(s: CharSequence, start:Int, before:Int, count:Int, tag:UpdateTag) {
+    fun onTextChanged(s: CharSequence,tag:UpdateTag) {
+        Log.log(TAG, "onTextChanged : ${s}, ${tag}", LogTag.I)
         when(tag) {
             UpdateTag.TITLE -> title = s.toString()
             UpdateTag.DTSTART -> dTStart = s.toString()
@@ -95,4 +111,7 @@ class CalendarEventViewModel @Inject constructor(
         timeZone = calendarEvent.timeZone
     }
 
+    companion object {
+        private const val TAG = "CalendarEventViewModel"
+    }
 }

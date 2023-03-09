@@ -54,9 +54,10 @@ class CalendarEventCPDataSource @Inject constructor(application: Application) {
                 CalendarContract.Events.CONTENT_URI,
                 calendarEvent.eventId
             )
-            val selection = "((${CalendarContract.Events.CALENDAR_ID} = ?))"
+            val selection = "(${CalendarContract.Events.CALENDAR_ID} = ?)"
             val selectionArgs: Array<String> = arrayOf("${calendarEvent.calId}")
-            val rows: Int = contentResolver.update(updateUri, values, selection, selectionArgs)
+
+            val rows: Int = contentResolver.update(updateUri, values, null, null)
 
             MyResult.Success(rows)
         } catch (error: java.lang.Exception) {
@@ -64,17 +65,18 @@ class CalendarEventCPDataSource @Inject constructor(application: Application) {
         }
     }
 
-    suspend fun delete(calendarEvent: CalendarEventLocalModel) = withContext(Dispatchers.IO) {
+    suspend fun delete(calendarEvent: CalendarEventLocalModel) : Result<Int> = withContext(Dispatchers.IO) {
         try {
             val uri: Uri = ContentUris.withAppendedId(
                 CalendarContract.Events.CONTENT_URI,
                 calendarEvent.eventId
             )
-            val selection = "((${CalendarContract.Events.CALENDAR_ID} = ?))"
-            val selectionArgs: Array<String> = arrayOf("${calendarEvent.calId}")
-            val rows: Int = contentResolver.delete(uri, selection, selectionArgs)
+//            val selection = "((${CalendarContract.Events.CALENDAR_ID} = ?))"
+//            val selectionArgs: Array<String> = arrayOf("${calendarEvent.calId}")
+            val rows: Int = contentResolver.delete(uri, null, null)
+            Result.Success(rows)
         } catch (error: Exception) {
-
+            Result.Error(error)
         }
     }
 }

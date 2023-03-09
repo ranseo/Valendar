@@ -12,6 +12,8 @@ import javax.inject.Inject
 import com.ranseo.valendar.data.model.Result
 import com.ranseo.valendar.data.model.ui.CalendarEventUIState
 import com.ranseo.valendar.data.model.ui.CalendarEventUIStateContainer
+import com.ranseo.valendar.util.Log
+import com.ranseo.valendar.util.LogTag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -45,13 +47,21 @@ class CalendarEventRepository @Inject constructor(private val calendarEventCPDat
 
     @RequiresApi(Build.VERSION_CODES.R)
     suspend fun updateCalendarEvent(calendarEvent: CalendarEventLocalModel) {
-        calendarEventCPDataSource.update(calendarEvent)
+        when(val row = calendarEventCPDataSource.update(calendarEvent)) {
+            is Result.Success<Int> -> {
+                Log.log(TAG, "updateCalendarEvent() : ${row.data}", LogTag.I)
+            }
+            is Result.Error -> {
+                Log.log(TAG, "updateCalendarEvent() : ${row.exception}", LogTag.I)
+            }
+        }
+
         calendarEventLocalDataSource.update(calendarEvent)
     }
 
-    suspend fun deleteCalendarEvent(calendarEvent: CalendarEventLocalModel) {
-        calendarEventCPDataSource.delete(calendarEvent)
+    suspend fun deleteCalendarEvent(calendarEvent: CalendarEventLocalModel) : Result<Int> {
         calendarEventLocalDataSource.delete(calendarEvent)
+        return calendarEventCPDataSource.delete(calendarEvent)
     }
 
 
